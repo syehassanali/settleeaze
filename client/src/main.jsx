@@ -10,11 +10,6 @@ import { Toaster } from 'react-hot-toast'
 
 
 
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App'
-import './styles/global.css'
-
 // Add this error boundary for missing assets
 try {
   ReactDOM.createRoot(document.getElementById('root')).render(
