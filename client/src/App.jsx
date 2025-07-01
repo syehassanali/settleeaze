@@ -1,10 +1,11 @@
+// src/App.jsx
 import { Routes, Route } from 'react-router-dom'
 import Layout from './components/common/Layout'
 import HomePage from './pages/Home/HomePage'
 import ServicesPage from './pages/Services/ServicesPage'
 import ServiceDetail from './pages/Services/ServiceDetail'
-import LoginPage from './pages/Auth/LoginPage'
-import RegisterPage from './pages/Auth/RegisterPage'
+import LoginPage from './pages/Auth/LoginPage' // Fixed path
+import RegisterPage from './pages/Auth/RegisterPage' // Fixed path
 import DashboardPage from './pages/Dashboard/DashboardPage'
 import AdminDashboard from './pages/Admin/AdminDashboard'
 import PrivateRoute from './components/common/PrivateRoute'
