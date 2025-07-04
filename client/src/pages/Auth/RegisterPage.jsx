@@ -1,18 +1,94 @@
-import RegisterForm from '../../components/forms/RegisterForm'
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
-const RegisterPage = () => {
+const Register = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const [error, setError] = useState('');
+
+  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    // TODO: Add real registration logic here
+    if (!form.name || !form.email || !form.password) {
+      setError('Please fill in all fields.');
+      return;
+    }
+    setError('');
+    // Simulate registration
+    alert('Registered!');
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Create a new account
-          </h2>
+    <div className="min-h-screen flex items-center justify-center bg-neutral-light">
+      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
+        <h2 className="text-3xl font-heading font-bold text-primary mb-6 text-center">Sign Up</h2>
+        {error && <div className="mb-4 text-red-600 text-center">{error}</div>}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block mb-1 font-medium text-neutral-dark">Name</label>
+            <input
+              type="text"
+              name="name"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              value={form.name}
+              onChange={handleChange}
+              required
+              autoComplete="name"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-medium text-neutral-dark">Email</label>
+            <input
+              type="email"
+              name="email"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              value={form.email}
+              onChange={handleChange}
+              required
+              autoComplete="email"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-medium text-neutral-dark">Password</label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary pr-10"
+                value={form.password}
+                onChange={handleChange}
+                required
+                autoComplete="new-password"
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                onClick={() => setShowPassword(!showPassword)}
+                tabIndex={-1}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
+          </div>
+          <button
+            type="submit"
+            className="w-full py-3 bg-primary text-white font-bold rounded-lg hover:bg-secondary transition"
+          >
+            Sign Up
+          </button>
+        </form>
+        <div className="mt-6 text-center text-neutral-dark">
+          Already have an account?{' '}
+          <Link to="/login" className="text-primary font-bold hover:underline">
+            Login
+          </Link>
         </div>
-        <RegisterForm />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default RegisterPage
+export default Register;

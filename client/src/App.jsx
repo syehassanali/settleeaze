@@ -8,6 +8,9 @@ import AdminDashboard from './pages/Admin/AdminDashboard'
 import PrivateRoute from './components/common/PrivateRoute'
 import AdminRoute from './components/common/AdminRoute'
 import NotFoundPage from './pages/Home/NotFoundPage'
+import Login from './pages/Auth/LoginPage'
+import Register from './pages/Auth/RegisterPage'
+
 
 // Add temporary fallback components
 const TempLogin = () => <div>Login Page - Under Construction</div>
@@ -21,9 +24,6 @@ function App() {
         <Route path="services" element={<ServicesPage />} />
         <Route path="services/:id" element={<ServiceDetail />} />
         
-        {/* Temporary auth pages */}
-        <Route path="login" element={<TempLogin />} />
-        <Route path="register" element={<TempRegister />} />
         
         <Route path="dashboard" element={<PrivateRoute />}>
           <Route index element={<DashboardPage />} />
@@ -35,6 +35,9 @@ function App() {
         
         <Route path="*" element={<NotFoundPage />} />
       </Route>
+
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
     </Routes>
   )
 }
