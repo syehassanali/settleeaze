@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { FaBars, FaTimes, FaUser, FaChevronDown } from 'react-icons/fa';
 import { MdDashboard } from 'react-icons/md';
-import { Link } from 'react-router-dom';
 
 const Navbar = ({ isAuthenticated }) => {
   const [scrolled, setScrolled] = useState(false);
