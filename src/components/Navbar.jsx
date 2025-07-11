@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaBars, FaTimes, FaUser, FaChevronDown } from 'react-icons/fa';
 import { MdDashboard } from 'react-icons/md';
-import jwt_decode from 'jwt-decode'; // ✅ Named import
+import { jwtDecode } from 'jwt-decode'; // ✅ Named import
 
 const Navbar = ({ isAuthenticated }) => {
   const [scrolled, setScrolled] = useState(false);
@@ -30,7 +30,7 @@ const localToken = localStorage.getItem('token'); // ✅ fixed name
 
 if (localToken) {
   try {
-    const decoded = jwt_decode(localToken);
+    const decoded = jwtDecode(localToken);
     userId = decoded.id; // assign to the outer variable
     console.log('Decoded userId from token:', userId);
     localStorage.setItem('userId', userId); // ✅ Save to localStorage

@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
 import api from '../services/api'
-import jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 const AuthContext = createContext()
 
@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
       console.log('Login response:', response.data);
 
       // Use compatible decode function
-      const payload = jwt_decode(response.data.token);
+      const payload = jwtDecode(response.data.token);
       localStorage.setItem('userId', payload.id);
 
       // Store userName if available
