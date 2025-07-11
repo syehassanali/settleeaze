@@ -1,4 +1,4 @@
-import { Routes, Route, BrowserRouter } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import Layout from './components/common/Layout'
 import HomePage from './pages/Home/HomePage'
 import ServicesPage from './pages/Services/ServicesPage'
@@ -24,7 +24,7 @@ const TempRegister = () => <div>Register Page - Under Construction</div>
 
 function App() {
   return (
-    <BrowserRouter>
+    <>
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Layout />}>
@@ -52,7 +52,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<RegisterPage />} />
       </Routes>
-    </BrowserRouter>
+    </>
   )
 }
 
