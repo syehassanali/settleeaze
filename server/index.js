@@ -24,7 +24,7 @@ dotenv.config({ path: path.resolve(__dirname, '.env') }); // ✅ Ensures proper 
 console.log("GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);
 
 const app = express();
-app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:3000'], credentials: true }));
+app.use(cors({ origin: ['https://settleeaze.com','http://localhost:5173', 'http://localhost:3000'], credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
