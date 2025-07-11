@@ -1,0 +1,86 @@
+[
+  {
+    "id": 1,
+    "slug": "top-10-things-to-pack-before-you-fly-to-australia",
+    "title": "Top 10 Things to Pack Before You Fly to Australia",
+    "summary": "Don’t forget these essentials before your journey! Here’s a checklist for international students.",
+    "content": "## Top 10 Things to Pack Before You Fly to Australia\n\n1. Passport & Visa\n2. University documents\n3. Weather-appropriate clothing\n4. Power adapters\n5. Medications & prescriptions\n6. SIM card or unlocked phone\n7. Emergency contacts\n8. Personal hygiene items\n9. Laptop & chargers\n10. Snacks from home\n\n**Tip:** Always check airline baggage rules!",
+    "category": "Checklist",
+    "date": "2024-06-01",
+    "author": "Aisha Patel",
+    "thumbnail": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80",
+    "tags": ["Checklist", "Arrival"]
+  },
+  {
+    "id": 2,
+    "slug": "how-to-open-a-bank-account-as-a-student",
+    "title": "How to Open a Bank Account as a Student",
+    "summary": "Step-by-step guide to opening your first bank account in Australia.",
+    "content": "## How to Open a Bank Account as a Student\n\n- Choose a bank (Commonwealth, ANZ, NAB, Westpac)\n- Bring your passport, visa, and student ID\n- Visit a branch or apply online\n- Set up online banking\n\n**Pro Tip:** Some banks offer student deals with no monthly fees!",
+    "category": "Banking",
+    "date": "2024-06-02",
+    "author": "Carlos Mendes",
+    "thumbnail": "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80",
+    "tags": ["Banking", "Finance"]
+  },
+  {
+    "id": 3,
+    "slug": "best-sim-cards-for-international-students-in-australia",
+    "title": "Best SIM Cards for International Students in Australia",
+    "summary": "Stay connected! Here are the best SIM card options for new arrivals.",
+    "content": "## Best SIM Cards for International Students\n\n- Optus: Great coverage, student plans\n- Telstra: Widest network\n- Vodafone: Good for international calls\n\n**Tip:** Buy a SIM at the airport or online before you arrive.",
+    "category": "Essentials",
+    "date": "2024-06-03",
+    "author": "Emily Zhang",
+    "thumbnail": "https://images.unsplash.com/photo-1519121782439-2f3c2c1d6bdf?auto=format&fit=crop&w=400&q=80",
+    "tags": ["SIM", "Essentials"]
+  },
+  {
+    "id": 4,
+    "slug": "what-to-expect-in-your-first-week-at-university",
+    "title": "What to Expect in Your First Week at University",
+    "summary": "Orientation, making friends, and settling in: here’s what your first week will look like.",
+    "content": "## What to Expect in Your First Week\n\n- Attend orientation events\n- Meet your classmates\n- Explore campus\n- Set up your student email\n- Register for classes\n\n**Tip:** Don’t hesitate to ask questions—everyone is new!",
+    "category": "Arrival",
+    "date": "2024-06-04",
+    "author": "Aisha Patel",
+    "thumbnail": "https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=400&q=80",
+    "tags": ["Arrival", "University"]
+  },
+  {
+    "id": 5,
+    "slug": "how-to-use-public-transport-in-melbourne-as-a-student",
+    "title": "How to Use Public Transport in Melbourne as a Student",
+    "summary": "Trams, trains, and buses: your guide to getting around Melbourne.",
+    "content": "## How to Use Public Transport in Melbourne\n\n- Get a Myki card\n- Download the PTV app\n- Check student discounts\n- Plan your route\n\n**Tip:** Always tap on and off with your Myki!",
+    "category": "Lifestyle",
+    "date": "2024-06-05",
+    "author": "Carlos Mendes",
+    "thumbnail": "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80",
+    "tags": ["Transport", "Melbourne"]
+  },
+  {
+    "id": 6,
+    "slug": "essential-healthcare-tips-for-international-students",
+    "title": "Essential Healthcare Tips for International Students",
+    "summary": "Stay healthy in Australia with these must-know tips.",
+    "content": "## Essential Healthcare Tips\n\n- Register for OSHC (Overseas Student Health Cover)\n- Find your nearest clinic\n- Know emergency numbers\n- Keep a copy of your health insurance\n\n**Tip:** Your university may have a health center on campus.",
+    "category": "Health",
+    "date": "2024-06-06",
+    "author": "Emily Zhang",
+    "thumbnail": "https://images.unsplash.com/photo-1512070679279-c2f999098c01?auto=format&fit=crop&w=400&q=80",
+    "tags": ["Health", "Essentials"]
+  },
+  {
+    "id": 7,
+    "slug": "difference-between-temporary-and-permanent-accommodation",
+    "title": "Difference Between Temporary and Permanent Accommodation",
+    "summary": "Short-term vs. long-term housing: what’s best for you?",
+    "content": "## Temporary vs. Permanent Accommodation\n\n- Temporary: Hostels, hotels, short-term rentals\n- Permanent: Student apartments, homestays, shared housing\n\n**Tip:** Book temporary accommodation before you arrive, then search for permanent options once settled.",
+    "category": "Accommodation",
+    "date": "2024-06-07",
+    "author": "Aisha Patel",
+    "thumbnail": "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=400&q=80",
+    "tags": ["Accommodation", "Housing"]
+  }
+] 
