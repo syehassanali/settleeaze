@@ -11,7 +11,6 @@ import './passport.js';
 import fs from 'fs';
 import serveStatic from 'serve-static';
 
-
 // ✅ Fix dotenv for ESModules
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -20,11 +19,20 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, '.env') }); // ✅ Ensures proper .env loading
 
-// ✅ Debug check
 console.log("GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);
 
 const app = express();
-app.use(cors({ origin: ['https://settleeaze.com','http://localhost:5173', 'http://localhost:3000'], credentials: true }));
+
+// ✅ Health check route
+app.get('/api/health', (req, res) => {
+  res.send('✅ Backend is live and healthy!');
+});
+
+app.use(cors({
+  origin: ['https://settleeaze.com', 'http://localhost:5173', 'http://localhost:3000'],
+  credentials: true
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -48,11 +56,10 @@ mongoose.connect(process.env.MONGO_URI, {
   useUnifiedTopology: true
 })
 .then(() => {
-  app.listen(5000, () => console.log('Server running on http://localhost:5000'));
+  const port = process.env.PORT || 5000;
+  app.listen(port, () => console.log(`🚀 Server running on http://localhost:${port}`));
 })
-.catch(err => console.error('MongoDB connection error:', err));
-
-
+.catch(err => console.error('❌ MongoDB connection error:', err));
 
 // Serve static files from Vite build
 const clientDistPath = path.resolve(__dirname, 'client-dist');
