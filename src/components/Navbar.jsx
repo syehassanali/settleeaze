@@ -92,10 +92,10 @@ if (localToken) {
   // Navigation items
   const navItems = [
     { name: 'Home', path: '/' },
-    { name: 'Blog', path: '/blog' },
     { name: 'Services', path: '/services' },
     { name: 'Packages', path: '/packages' },
     { name: 'About', path: '/about' },
+    { name: 'Blog', path: '/blog' },
     { name: 'Contact', path: '/contact' },
   ];
 
@@ -117,8 +117,8 @@ if (localToken) {
           </span>
         </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex space-x-6 items-center">
+        {/* Desktop Navigation - Centered */}
+        <nav className="hidden md:flex space-x-6 items-center flex-1 justify-center">
           {navItems.map((item) => (
             <Link
               key={item.name}
@@ -130,18 +130,22 @@ if (localToken) {
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-600 transition-all duration-300 group-hover:w-full"></span>
             </Link>
           ))}
+        </nav>
+
+        {/* Auth Buttons - Right Side */}
+        <div className="hidden md:flex items-center space-x-4">
           {token && (
             <Link
               to="/dashboard"
-              className="ml-6 px-4 py-2 bg-indigo-100 text-indigo-700 font-semibold rounded-lg hover:bg-indigo-200 transition"
+              className="px-4 py-2 bg-indigo-100 text-indigo-700 font-semibold rounded-lg hover:bg-indigo-200 transition"
             >
               Dashboard
             </Link>
           )}
           {token ? (
             <>
-              <span className="ml-4 font-semibold text-indigo-700">Welcome, {userName}</span>
-              <button onClick={handleLogout} className="ml-4 px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition">Logout</button>
+              <span className="font-semibold text-indigo-700">Welcome, {userName}</span>
+              <button onClick={handleLogout} className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition">Logout</button>
             </>
           ) : (
             <>
@@ -159,7 +163,7 @@ if (localToken) {
               </Link>
             </>
           )}
-        </nav>
+        </div>
 
         {/* Mobile Menu Button */}
         <button

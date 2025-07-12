@@ -147,7 +147,7 @@ const DashboardPage = () => {
                     <td className="px-4 py-2">{b.preferredDate ? new Date(b.preferredDate).toLocaleDateString() : '-'}</td>
                     <td className="px-4 py-2">{b.createdAt ? new Date(b.createdAt).toLocaleDateString() : '-'}</td>
                     <td className="px-4 py-2">
-                      {b.paymentStatus === 'Not Paid' && (
+                      {(b.paymentStatus === 'Not Paid' || b.paymentStatus === 'not_paid' || b.paymentStatus === 'unpaid' || !b.paymentStatus) && (
                         <button
                           className="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-xs"
                           onClick={() => handleShowBankModal(b)}
@@ -160,6 +160,10 @@ const DashboardPage = () => {
                       )}
                       {b.paymentStatus === 'Verified' && (
                         <span className="text-xs text-green-700">Payment received</span>
+                      )}
+                      {/* Debug: Show payment status for troubleshooting */}
+                      {!b.paymentStatus || (b.paymentStatus !== 'Not Paid' && b.paymentStatus !== 'Verification Pending' && b.paymentStatus !== 'Verified') && (
+                        <span className="text-xs text-gray-500">Status: {b.paymentStatus || 'undefined'}</span>
                       )}
                     </td>
                   </tr>

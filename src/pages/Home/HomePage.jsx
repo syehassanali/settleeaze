@@ -6,7 +6,6 @@ import HeroHeader from '../../components/HeroHeader';
 import ServicesShowcase from '../../components/ServicesShowcase';
 import ValueProposition from '../../components/ValueProposition';
 import HowItWorks from '../../components/HowItWorks';
-import TestimonialsCarousel from '../../components/TestimonialsCarousel';
 import UniversityPartners from '../../components/UniversityPartners';
 import GeoDiversityMap from '../../components/GeoDiversityMap';
 import FinalCTA from '../../components/FinalCTA';
@@ -65,8 +64,6 @@ const HomePage = () => {
             </div>
           </div>
         </section>
-        {/* Testimonials/Trust Badges */}
-        <TestimonialsCarousel />
         {/* CTA Banner */}
         <FinalCTA />
         {/* About Us Teaser */}

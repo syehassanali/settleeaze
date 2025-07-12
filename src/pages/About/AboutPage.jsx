@@ -25,7 +25,7 @@ const team = [
 const values = [
   {
     icon: <FaUserGraduate className="text-indigo-600 text-3xl mb-2" />,
-    title: 'Student-Centric',
+    title: 'Student-Friendly',
     desc: 'We prioritize student safety and convenience above all else.'
   },
   {
@@ -43,11 +43,6 @@ const values = [
     title: 'Community-Driven',
     desc: 'We help you make friends and feel at home from Day 1.'
   },
-];
-
-const partners = [
-  { name: 'Melbourne Uni', logo: 'https://upload.wikimedia.org/wikipedia/en/6/6e/University_of_Melbourne_coat_of_arms.svg' },
-  { name: 'TravelSafe', logo: 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png' },
 ];
 
 const AboutPage = () => (
@@ -106,20 +101,6 @@ const AboutPage = () => (
           </div>
         ))}
       </div>
-    </section>
-
-    {/* Partners / Affiliations */}
-    <section className="container mx-auto px-4 py-12 max-w-4xl text-center">
-      <h2 className="text-2xl font-semibold mb-6">Our Partners</h2>
-      <div className="flex flex-wrap justify-center items-center gap-8 mb-6">
-        {partners.map(partner => (
-          <div key={partner.name} className="flex flex-col items-center">
-            <img src={partner.logo} alt={partner.name} className="h-16 object-contain mb-2" />
-            <span className="text-gray-700 text-sm font-medium">{partner.name}</span>
-          </div>
-        ))}
-      </div>
-      <blockquote className="italic text-indigo-700 max-w-xl mx-auto">“I felt so supported from the moment I landed. The team made my transition smooth and stress-free!”<br /><span className="block mt-2 text-gray-600">— Priya, India</span></blockquote>
     </section>
 
     {/* CTA Section */}
