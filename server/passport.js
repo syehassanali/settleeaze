@@ -26,16 +26,30 @@ passport.use(new GoogleStrategy({
   callbackURL: process.env.GOOGLE_CALLBACK_URL,
 }, async (accessToken, refreshToken, profile, done) => {
   try {
+    // First, try to find user by Google ID
     let user = await User.findOne({ googleId: profile.id });
+    
     if (!user) {
-      user = await User.create({
-        name: profile.displayName,
-        email: profile.emails[0].value,
-        googleId: profile.id,
-      });
+      // If no user with Google ID, check if user exists with same email
+      user = await User.findOne({ email: profile.emails[0].value });
+      
+      if (user) {
+        // User exists with email but no Google ID - link the accounts
+        user.googleId = profile.id;
+        await user.save();
+      } else {
+        // Create new user
+        user = await User.create({
+          name: profile.displayName,
+          email: profile.emails[0].value,
+          googleId: profile.id,
+        });
+      }
     }
+    
     return done(null, user);
   } catch (err) {
+    console.error('Google OAuth error:', err);
     return done(err, null);
   }
 }));
