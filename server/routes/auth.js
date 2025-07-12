@@ -95,10 +95,10 @@ router.get('/google/callback', passport.authenticate('google', { failureRedirect
   const user = req.user;
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
   
-  // Redirect to frontend with token
+  // Redirect to frontend dashboard with token
   const frontendUrl = 'https://settleeaze.com';
   
-  res.redirect(`${frontendUrl}/auth/google/callback?token=${token}`);
+  res.redirect(`${frontendUrl}/dashboard?token=${token}`);
 });
 
 export default router; 

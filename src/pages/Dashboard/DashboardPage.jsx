@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 import axios from 'axios';
 import api from '../../services/api';
 
@@ -21,13 +22,24 @@ const DashboardPage = () => {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
+    // Handle Google OAuth token from URL
+    const tokenFromUrl = searchParams.get('token');
+    if (tokenFromUrl) {
+      localStorage.setItem('token', tokenFromUrl);
+      toast.success('Successfully signed in with Google!');
+      // Remove token from URL
+      navigate('/dashboard', { replace: true });
+    }
+
     const token = localStorage.getItem('token');
     if (!token) {
       navigate('/login');
       return;
     }
+    
     api.get('/user/me')
       .then(res => {
         setUser(res.data);
@@ -40,7 +52,7 @@ const DashboardPage = () => {
         localStorage.removeItem('userName');
         setTimeout(() => navigate('/login'), 1500);
       });
-  }, [navigate]);
+  }, [navigate, searchParams]);
 
   const fetchBookings = () => {
     if (user && user._id) {

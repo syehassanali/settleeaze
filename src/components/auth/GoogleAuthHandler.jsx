@@ -27,7 +27,7 @@ const GoogleAuthHandler = () => {
       // Show success message
       toast.success('Successfully signed in with Google!');
       
-      // Redirect to dashboard or home
+      // Redirect to dashboard
       navigate('/dashboard');
     } else {
       // No token found, redirect to login
