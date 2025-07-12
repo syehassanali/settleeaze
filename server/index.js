@@ -51,7 +51,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/booking', bookingRoutes);
 
 // MongoDB connection
-const mongoURI = process.env.MONGO_URI || process.env.DATABASE_URL;
+const mongoURI = process.env.MONGO_URL || process.env.MONGO_URI || process.env.DATABASE_URL;
 
 console.log("🔍 Attempting to connect to MongoDB...");
 console.log("🔍 MongoDB URI available:", !!mongoURI);
