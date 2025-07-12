@@ -53,15 +53,25 @@ app.use('/api/booking', bookingRoutes);
 // MongoDB connection
 const mongoURI = process.env.MONGO_URI || process.env.DATABASE_URL;
 
+console.log("🔍 Attempting to connect to MongoDB...");
+console.log("🔍 MongoDB URI available:", !!mongoURI);
+if (mongoURI) {
+  console.log("🔍 MongoDB URI starts with:", mongoURI.substring(0, 20) + "...");
+}
+
 mongoose.connect(mongoURI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
 .then(() => {
+  console.log("✅ MongoDB connected successfully!");
   const port = process.env.PORT || 5000;
   app.listen(port, () => console.log(`🚀 Server running on port ${port}`));
 })
-.catch(err => console.error('❌ MongoDB connection error:', err));
+.catch(err => {
+  console.error('❌ MongoDB connection error:', err);
+  console.error('❌ MongoDB URI was:', mongoURI ? 'Set' : 'Not set');
+});
 
 // Serve static files from Vite build
 const clientDistPath = path.resolve(__dirname, 'client-dist');
