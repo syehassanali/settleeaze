@@ -10,6 +10,8 @@ import AdminRoute from './components/common/AdminRoute'
 import NotFoundPage from './pages/Home/NotFoundPage'
 import Login from './pages/Auth/LoginPage'
 import RegisterPage from './pages/Auth/RegisterPage'
+import ForgotPasswordPage from './pages/Auth/ForgotPasswordPage'
+import GoogleAuthHandler from './components/auth/GoogleAuthHandler'
 import PackagesPage from './pages/Packages/PackagesPage'
 import AboutPage from './pages/About/AboutPage'
 import BlogPage from './pages/Blog/BlogPage'
@@ -51,6 +53,8 @@ function App() {
 
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<RegisterPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/auth/google/callback" element={<GoogleAuthHandler />} />
       </Routes>
     </>
   )

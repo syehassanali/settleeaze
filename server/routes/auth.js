@@ -36,6 +36,57 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// Forgot Password
+router.post('/forgot-password', async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      // Don't reveal if email exists or not for security
+      return res.json({ message: 'If an account with that email exists, a password reset link has been sent.' });
+    }
+
+    // Generate reset token
+    const resetToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    
+    // In a real application, you would:
+    // 1. Save the reset token to the user document
+    // 2. Send an email with the reset link
+    // 3. Use a proper email service like SendGrid, Mailgun, etc.
+    
+    // For now, we'll just return success
+    // TODO: Implement actual email sending
+    console.log(`Password reset requested for ${email}. Reset token: ${resetToken}`);
+    
+    res.json({ message: 'If an account with that email exists, a password reset link has been sent.' });
+  } catch (err) {
+    console.error('Forgot password error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Reset Password (when user clicks the reset link)
+router.post('/reset-password', async (req, res) => {
+  const { token, newPassword } = req.body;
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id);
+    
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid or expired reset token' });
+    }
+
+    // Hash new password
+    const hash = await bcrypt.hash(newPassword, 10);
+    user.password = hash;
+    await user.save();
+
+    res.json({ message: 'Password reset successfully' });
+  } catch (err) {
+    res.status(400).json({ message: 'Invalid or expired reset token' });
+  }
+});
+
 // Google OAuth
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
@@ -43,8 +94,11 @@ router.get('/google/callback', passport.authenticate('google', { failureRedirect
   // Successful Google login
   const user = req.user;
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-  // Redirect to frontend with token (or send as JSON if using popup)
-  res.redirect(`http://localhost:5173/login?token=${token}`);
+  
+  // Redirect to frontend with token
+  const frontendUrl = 'https://settleeaze.com';
+  
+  res.redirect(`${frontendUrl}/auth/google/callback?token=${token}`);
 });
 
 export default router; 
