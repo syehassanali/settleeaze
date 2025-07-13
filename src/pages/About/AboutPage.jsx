@@ -59,7 +59,11 @@ const AboutPage = () => (
     {/* Our Story / Origin */}
     <section className="container mx-auto px-4 py-12 max-w-3xl text-center">
       <h2 className="text-2xl font-semibold mb-4">Our Story</h2>
-      <p className="text-lg text-gray-700">Our journey began when a group of former international students saw how overwhelming the first days in a new country could be. We decided to build the support system we wished we had. Our goal is to make student transitions stress-free and empowering for everyone.</p>
+      <p className="text-lg text-gray-700 leading-relaxed">
+        SettleEaze was born from real experience. A group of former international students saw firsthand how overwhelming those first days in a new country can be — the confusion, the stress, the feeling of being on your own.
+        <br /><br />
+        So we built what we wish we had — a trusted, friendly support system that helps people land with confidence and settle with ease. Whether you're here to study, work, or start fresh, we're here to make your first steps smoother.
+      </p>
     </section>
 
     {/* Mission & Vision */}

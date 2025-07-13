@@ -32,17 +32,18 @@ const HeroHeader = () => {
       {/* Overlay */}
       <div className="absolute inset-0 bg-black/60 z-10" />
       {/* Content */}
-      <div className="relative z-20 max-w-3xl text-left">
+      <div className="relative z-20 max-w-4xl text-left">
         <h1 className="text-white font-bold leading-tight text-4xl md:text-6xl mb-6">
-          Helping Everyone Settle Abroad<br />
-          <span className="text-blue-200 font-semibold text-2xl md:text-4xl block mt-2">Students, Workers, Professionals &amp; More</span>
+          New beginnings made easier.
         </h1>
-        <p className="text-white text-lg md:text-xl mb-8 max-w-xl">
-          Your all-in-one support system for relocating internationally.
+        <p className="text-white text-lg md:text-xl mb-8 max-w-2xl leading-relaxed">
+          Whether you're coming to study, work, or chase new opportunities  SettleEaze takes the stress out of settling in.
+          <br /><br />
+          From airport pickup to housing help, SIM cards to local orientation  we've got you covered.
         </p>
         <Link
           to="/packages"
-          className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full font-semibold text-lg shadow-lg transition"
+          className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-semibold text-lg shadow-lg transition"
         >
           Explore Packages
         </Link>

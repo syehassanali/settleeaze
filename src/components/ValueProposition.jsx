@@ -1,21 +1,35 @@
 import React from 'react';
-import { FaHeadset, FaGraduationCap, FaWallet, FaGlobeAmericas } from 'react-icons/fa';
+import { FaClock, FaUserFriends, FaUsers } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
 const values = [
-  { icon: <FaHeadset className="text-3xl text-primary" />, title: '24/7 Support', desc: 'Help anytime, anywhere' },
-  { icon: <FaGraduationCap className="text-3xl text-primary" />, title: 'Student-Focused', desc: 'By students, for students' },
-  { icon: <FaWallet className="text-3xl text-primary" />, title: 'Affordable Packages', desc: 'Budget-friendly solutions' },
-  { icon: <FaGlobeAmericas className="text-3xl text-primary" />, title: 'Cultural Integration', desc: 'Feel at home faster' }
+  { 
+    icon: <FaClock className="text-3xl text-primary" />, 
+    title: 'Support That Doesn\'t Sleep', 
+    desc: 'Our team is here 24/7. Day or night, questions or emergencies — we\'ve got you.' 
+  },
+  { 
+    icon: <FaUserFriends className="text-3xl text-primary" />, 
+    title: 'We\'ve Been There', 
+    desc: 'Built by people who\'ve experienced the same move — we understand every challenge.' 
+  },
+  { 
+    icon: <FaUsers className="text-3xl text-primary" />, 
+    title: 'For Everyone', 
+    desc: 'Students. Workers. Professionals. Families. We tailor services to fit your journey, not just your visa.' 
+  }
 ];
 
 const ValueProposition = () => (
   <section className="py-20 bg-neutral-light">
     <div className="container mx-auto px-4">
       <div className="text-center mb-16">
-        <h2 className="text-3xl md:text-4xl font-heading font-bold text-neutral-dark mb-4">Why Choose SettleEaze</h2>
+        <h2 className="text-3xl md:text-4xl font-heading font-bold text-neutral-dark mb-6">Why Choose SettleEaze</h2>
+        <p className="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed">
+          Moving countries is exciting — but it can also be overwhelming. That's where we step in.
+        </p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {values.map((v, i) => (
           <motion.div
             key={v.title}
@@ -30,7 +44,7 @@ const ValueProposition = () => (
               {v.icon}
             </div>
             <h3 className="text-xl font-bold text-neutral-dark mb-4">{v.title}</h3>
-            <p className="text-neutral-dark">{v.desc}</p>
+            <p className="text-neutral-dark leading-relaxed">{v.desc}</p>
           </motion.div>
         ))}
       </div>

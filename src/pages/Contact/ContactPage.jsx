@@ -207,8 +207,8 @@ const ContactPage = () => {
                   <ul className="space-y-1">
                     {airports.map(airport => (
                       <li key={airport.name} className="text-gray-700">• {airport.name}</li>
-                    ))}
-                  </ul>
+                ))}
+              </ul>
                 </div>
               </div>
             </div>
