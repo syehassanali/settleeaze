@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import api from '../../services/api';
 
 const RegisterPage = () => {
@@ -7,6 +7,7 @@ const RegisterPage = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
 
@@ -37,7 +38,8 @@ const RegisterPage = () => {
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('userName', res.data.user.name);
       setLoading(false);
-      navigate('/');
+      const redirectTo = location.state?.from || '/';
+      navigate(redirectTo, { replace: true });
     } catch (err) {
       setLoading(false);
       setError(err.response?.data?.message || 'Signup failed');

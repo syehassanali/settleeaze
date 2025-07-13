@@ -37,7 +37,10 @@ const LoginPage = () => {
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('userName', res.data.user.name);
       setLoading(false);
-      const redirectTo = location.state?.from || '/packages';
+      // Redirect logic:
+      // 1. If redirected from a protected route, go there
+      // 2. Else, go to home
+      const redirectTo = location.state?.from || '/';
       navigate(redirectTo, { replace: true });
     } catch (err) {
       setLoading(false);
