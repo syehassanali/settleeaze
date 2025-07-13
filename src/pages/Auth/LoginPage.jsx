@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 import api from '../../services/api';
 
 const LoginPage = () => {
@@ -7,6 +8,13 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  React.useEffect(() => {
+    if (location.state && location.state.from === '/packages') {
+      toast('You must log in to book a package.', { icon: '🔒' });
+    }
+  }, [location.state]);
 
   const validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
 
@@ -29,7 +37,8 @@ const LoginPage = () => {
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('userName', res.data.user.name);
       setLoading(false);
-      navigate('/');
+      const redirectTo = location.state?.from || '/packages';
+      navigate(redirectTo, { replace: true });
     } catch (err) {
       setLoading(false);
       setError(err.response?.data?.message || 'Login failed');

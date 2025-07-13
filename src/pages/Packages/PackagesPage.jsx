@@ -3,6 +3,7 @@ import BookingForm from '../../components/forms/BookingForm';
 import CustomPackageBuilder from '../../components/CustomPackageBuilder';
 import PricingCard from '../../components/PricingCard';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 
 const packages = [
   {
@@ -107,6 +108,12 @@ const PackagesPage = () => {
   }, []);
 
   const handleBookNow = (pkg) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      toast.error('You must log in to book a package.');
+      navigate('/login', { state: { from: '/packages' } });
+      return;
+    }
     if (pkg.isCustom) {
       setCustomBuilderOpen(true);
     } else {
