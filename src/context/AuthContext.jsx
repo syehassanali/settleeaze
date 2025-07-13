@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }) => {
 
       localStorage.setItem('token', response.data.token);
       toast.success('Logged in successfully');
-      navigate('/dashboard');
+      // Removed navigate('/dashboard') here
     } catch (error) {
       toast.error(error.response?.data?.message || 'Login failed');
     }
@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', response.data.token)
       localStorage.setItem('userId', response.data.user._id || response.data.user.id)
       toast.success('Registered successfully')
-      navigate('/dashboard')
+      // Removed navigate('/dashboard') here
     } catch (error) {
       toast.error(error.response?.data?.message || 'Registration failed')
     }
