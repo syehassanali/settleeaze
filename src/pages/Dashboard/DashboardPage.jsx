@@ -173,16 +173,17 @@ const DashboardPage = () => {
   const handleCloseViewBooking = () => setViewBooking(null);
   const handleCancelBooking = (booking) => setCancelBooking(booking);
   const handleCloseCancelBooking = () => setCancelBooking(null);
+  // 1. Cancel booking with real API
   const confirmCancelBooking = async () => {
     if (!cancelBooking) return;
     setCancelLoading(true);
     try {
-      // Replace with real API call
-      await new Promise(res => setTimeout(res, 1000));
+      // Try DELETE /booking/:id
+      await api.delete(`/booking/${cancelBooking._id}`);
       toast.success('Booking cancelled!');
       setCancelBooking(null);
       fetchBookings();
-    } catch {
+    } catch (err) {
       toast.error('Failed to cancel booking.');
     } finally {
       setCancelLoading(false);
@@ -397,7 +398,6 @@ const DashboardPage = () => {
             <div className="space-y-4">
               <a href="https://wa.me/61412345678" target="_blank" rel="noopener noreferrer" className="block w-full py-3 px-4 bg-green-100 text-green-800 rounded-lg font-semibold text-center hover:bg-green-200 transition">WhatsApp Chat</a>
               <a href="mailto:support@settleeaze.com" className="block w-full py-3 px-4 bg-blue-100 text-blue-800 rounded-lg font-semibold text-center hover:bg-blue-200 transition">Email Support</a>
-              <a href="/faq" className="block w-full py-3 px-4 bg-gray-100 text-gray-800 rounded-lg font-semibold text-center hover:bg-gray-200 transition">Visit FAQ</a>
             </div>
           </div>
         </div>
@@ -463,10 +463,8 @@ const DashboardPage = () => {
           <div className="bg-white rounded-2xl shadow p-6">
             <h2 className="text-lg font-semibold mb-4 text-indigo-700">Useful Links</h2>
             <ul className="space-y-2 text-left">
-              <li><a href="/faq" className="text-blue-600 hover:underline">FAQ</a></li>
               <li><a href="/contact" className="text-blue-600 hover:underline">Contact Us</a></li>
               <li><a href="/blog" className="text-blue-600 hover:underline">Blog</a></li>
-              <li><a href="/guides" className="text-blue-600 hover:underline">Guides</a></li>
             </ul>
           </div>
         </div>
@@ -500,56 +498,56 @@ const DashboardPage = () => {
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold text-indigo-700">Your Bookings</h2>
               <button onClick={() => navigate('/packages')} className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition">Book New Package</button>
-            </div>
-            {bookingsLoading ? (
-              <div className="text-center py-8">Loading bookings...</div>
-            ) : bookings.length === 0 ? (
+      </div>
+        {bookingsLoading ? (
+          <div className="text-center py-8">Loading bookings...</div>
+        ) : bookings.length === 0 ? (
               <div className="text-center text-gray-500 py-8">No bookings found. <button onClick={() => navigate('/packages')} className="ml-2 underline text-indigo-600">Book your first package</button></div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead>
-                    <tr>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Booking ID</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Package</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Payment</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Preferred Date</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Created</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-100">
-                    {bookings.map(b => (
-                      <tr key={b._id} className="hover:bg-gray-50">
-                        <td className="px-4 py-2 font-mono text-blue-600">{b.bookingId}</td>
-                        <td className="px-4 py-2">{b.packageName}</td>
-                        <td className="px-4 py-2">
-                          <span className={`px-2 py-1 rounded text-xs font-semibold ${b.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' : b.status === 'Confirmed' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}`}>{b.status}</span>
-                        </td>
-                        <td className="px-4 py-2">
-                          {b.paymentStatus === 'Verified' ? (
-                            <span className="px-2 py-1 rounded text-xs font-semibold bg-green-100 text-green-700">Received</span>
-                          ) : b.paymentStatus === 'Verification Pending' ? (
-                            <span className="px-2 py-1 rounded text-xs font-semibold bg-yellow-100 text-yellow-700">Verification Pending</span>
-                          ) : b.paymentStatus === 'Paid' ? (
-                            <span className="px-2 py-1 rounded text-xs font-semibold bg-blue-100 text-blue-700">Paid</span>
-                          ) : (
-                            <span className="px-2 py-1 rounded text-xs font-semibold bg-gray-100 text-gray-700">Not Paid</span>
-                          )}
-                        </td>
-                        <td className="px-4 py-2">{b.preferredDate ? new Date(b.preferredDate).toLocaleDateString() : '-'}</td>
-                        <td className="px-4 py-2">{b.createdAt ? new Date(b.createdAt).toLocaleDateString() : '-'}</td>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead>
+                <tr>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Booking ID</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Package</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Payment</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Preferred Date</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Created</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-100">
+                {bookings.map(b => (
+                  <tr key={b._id} className="hover:bg-gray-50">
+                    <td className="px-4 py-2 font-mono text-blue-600">{b.bookingId}</td>
+                    <td className="px-4 py-2">{b.packageName}</td>
+                    <td className="px-4 py-2">
+                      <span className={`px-2 py-1 rounded text-xs font-semibold ${b.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' : b.status === 'Confirmed' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}`}>{b.status}</span>
+                    </td>
+                    <td className="px-4 py-2">
+                      {b.paymentStatus === 'Verified' ? (
+                        <span className="px-2 py-1 rounded text-xs font-semibold bg-green-100 text-green-700">Received</span>
+                      ) : b.paymentStatus === 'Verification Pending' ? (
+                        <span className="px-2 py-1 rounded text-xs font-semibold bg-yellow-100 text-yellow-700">Verification Pending</span>
+                      ) : b.paymentStatus === 'Paid' ? (
+                        <span className="px-2 py-1 rounded text-xs font-semibold bg-blue-100 text-blue-700">Paid</span>
+                      ) : (
+                        <span className="px-2 py-1 rounded text-xs font-semibold bg-gray-100 text-gray-700">Not Paid</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-2">{b.preferredDate ? new Date(b.preferredDate).toLocaleDateString() : '-'}</td>
+                    <td className="px-4 py-2">{b.createdAt ? new Date(b.createdAt).toLocaleDateString() : '-'}</td>
                         <td className="px-4 py-2 flex gap-2">
                           <button onClick={() => handleViewBooking(b)} className="px-2 py-1 bg-indigo-50 text-indigo-700 rounded hover:bg-indigo-100 text-xs">View</button>
                           <button onClick={() => handleCancelBooking(b)} className="px-2 py-1 bg-red-50 text-red-700 rounded hover:bg-red-100 text-xs" disabled={b.status !== 'Pending'}>Cancel</button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
           </div>
 
           {/* Onboarding Progress */}
@@ -560,17 +558,11 @@ const DashboardPage = () => {
               <div className="bg-gradient-to-r from-green-400 to-indigo-500 h-3 rounded-full transition-all duration-500" style={{ width: `${progressPercent}%` }}></div>
             </div>
             <ul className="space-y-3">
-              {onboardingSteps.map((step, idx) => (
+              {onboardingSteps.map((step) => (
                 <li key={step.key} className="flex items-center gap-2">
                   <span className={`w-4 h-4 rounded-full inline-block ${step.status === 'completed' ? 'bg-green-500' : step.status === 'in_progress' ? 'bg-yellow-400' : 'bg-gray-300'}`}></span>
                   <span className="flex-1">{step.label}</span>
                   <span className={`text-xs font-semibold ${step.status === 'completed' ? 'text-green-600' : step.status === 'in_progress' ? 'text-yellow-600' : 'text-gray-600'}`}>{step.status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
-                  {/* Mock controls for demo */}
-                  <select value={step.status} onChange={e => handleStepStatus(idx, e.target.value)} className="ml-2 px-2 py-1 rounded border text-xs">
-                    <option value="pending">Pending</option>
-                    <option value="in_progress">In Progress</option>
-                    <option value="completed">Completed</option>
-                  </select>
                 </li>
               ))}
             </ul>

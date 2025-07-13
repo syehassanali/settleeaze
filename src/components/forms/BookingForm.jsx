@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { FaCheck, FaTimes, FaCalendar, FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt } from 'react-icons/fa';
 import api from '../../services/api';
+import { useNavigate } from 'react-router-dom';
 
 const BookingForm = ({ open, onClose, pkg }) => {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     userName: '',
     email: '',
@@ -54,6 +56,10 @@ const BookingForm = ({ open, onClose, pkg }) => {
 
       setSuccess('Booking successful!');
       setBookingId(res.data.bookingId);
+      setTimeout(() => {
+        onClose && onClose();
+        navigate('/dashboard');
+      }, 2500);
     } catch (err) {
       setError(err.response?.data?.message || 'Booking failed.');
     } finally {
