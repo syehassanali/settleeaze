@@ -7,7 +7,7 @@ const bookingSchema = new mongoose.Schema({
   email: { type: String, required: true },
   packageId: { type: String, required: true }, // TEMP: allow string for hardcoded packages
   packageName: { type: String, required: true },
-  status: { type: String, enum: ['Pending', 'Confirmed', 'Completed'], default: 'Pending' },
+  status: { type: String, enum: ['Pending', 'Confirmed', 'Completed', 'Cancelled'], default: 'Pending' },
   bookingDate: { type: Date, required: true },
   preferredDate: { type: Date, required: true },
   createdAt: { type: Date, default: Date.now },

@@ -173,13 +173,12 @@ const DashboardPage = () => {
   const handleCloseViewBooking = () => setViewBooking(null);
   const handleCancelBooking = (booking) => setCancelBooking(booking);
   const handleCloseCancelBooking = () => setCancelBooking(null);
-  // 1. Cancel booking with real API
+  // 1. Cancel booking with real API (PATCH to set status to 'Cancelled')
   const confirmCancelBooking = async () => {
     if (!cancelBooking) return;
     setCancelLoading(true);
     try {
-      // Try DELETE /booking/:id
-      await api.delete(`/booking/${cancelBooking._id}`);
+      await api.patch(`/booking/${cancelBooking._id}`, { status: 'Cancelled' });
       toast.success('Booking cancelled!');
       setCancelBooking(null);
       fetchBookings();
@@ -541,7 +540,7 @@ const DashboardPage = () => {
                         <td className="px-4 py-2 flex gap-2">
                           <button onClick={() => handleViewBooking(b)} className="px-2 py-1 bg-indigo-50 text-indigo-700 rounded hover:bg-indigo-100 text-xs">View</button>
                           <button onClick={() => handleCancelBooking(b)} className="px-2 py-1 bg-red-50 text-red-700 rounded hover:bg-red-100 text-xs" disabled={b.status !== 'Pending'}>Cancel</button>
-                    </td>
+                        </td>
                   </tr>
                 ))}
               </tbody>

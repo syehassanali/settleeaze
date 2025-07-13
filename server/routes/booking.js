@@ -58,7 +58,7 @@ router.get('/', async (req, res) => {
 router.patch('/:id', async (req, res) => {
   try {
     const { status } = req.body;
-    if (!['Pending', 'Confirmed', 'Completed'].includes(status)) {
+    if (!['Pending', 'Confirmed', 'Completed', 'Cancelled'].includes(status)) {
       return res.status(400).json({ success: false, message: 'Invalid status.' });
     }
     const booking = await Booking.findByIdAndUpdate(
