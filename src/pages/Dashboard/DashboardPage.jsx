@@ -57,9 +57,9 @@ const DashboardPage = () => {
 
   // Onboarding progress state (mock for now)
   const [onboardingSteps, setOnboardingSteps] = useState([
-    { key: 'airport', label: 'Airport Pickup', status: 'completed' },
-    { key: 'sim', label: 'SIM Card Setup', status: 'completed' },
-    { key: 'accommodation', label: 'Accommodation', status: 'in_progress' },
+    { key: 'airport', label: 'Airport Pickup', status: 'pending' },
+    { key: 'sim', label: 'SIM Card Setup', status: 'pending' },
+    { key: 'accommodation', label: 'Accommodation', status: 'pending' },
     { key: 'bank', label: 'Bank Account', status: 'pending' },
     { key: 'healthcare', label: 'Healthcare', status: 'pending' },
     { key: 'orientation', label: 'Orientation', status: 'pending' },
@@ -540,7 +540,7 @@ const DashboardPage = () => {
                         <td className="px-4 py-2 flex gap-2">
                           <button onClick={() => handleViewBooking(b)} className="px-2 py-1 bg-indigo-50 text-indigo-700 rounded hover:bg-indigo-100 text-xs">View</button>
                           <button onClick={() => handleCancelBooking(b)} className="px-2 py-1 bg-red-50 text-red-700 rounded hover:bg-red-100 text-xs" disabled={b.status !== 'Pending'}>Cancel</button>
-                        </td>
+                    </td>
                   </tr>
                 ))}
               </tbody>

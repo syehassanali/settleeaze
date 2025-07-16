@@ -78,10 +78,6 @@ const faqs = [
     answer: 'Yes, you can upgrade at any time by contacting our support team.'
   },
   {
-    question: 'Are there group discounts?',
-    answer: 'Yes, we offer special rates for groups. Please reach out for a custom quote.'
-  },
-  {
     question: 'What payment methods are accepted?',
     answer: 'We accept credit/debit cards, PayPal, and bank transfers.'
   },
@@ -117,7 +113,7 @@ const PackagesPage = () => {
     if (pkg.isCustom) {
       setCustomBuilderOpen(true);
     } else {
-      setSelectedPackage(pkg);
+    setSelectedPackage(pkg);
       setBookingOpen(true);
     }
   };
@@ -139,7 +135,7 @@ const PackagesPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8 pt-24">
+    <div className="container mx-auto px-4 py-8 pt-24">
         {/* Header */}
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
@@ -152,7 +148,7 @@ const PackagesPage = () => {
 
         {/* Pricing Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto mb-16">
-          {packages.map((pkg, idx) => (
+        {packages.map((pkg, idx) => (
             <PricingCard
               key={pkg.name}
               name={pkg.name}
@@ -194,29 +190,29 @@ const PackagesPage = () => {
               <p className="text-gray-600 text-sm">Help whenever you need it, day or night</p>
             </div>
           </div>
-        </div>
+      </div>
 
-        {/* FAQ Section */}
+      {/* FAQ Section */}
         <div className="max-w-3xl mx-auto">
           <h3 className="text-3xl font-bold text-center mb-8 text-gray-900">Frequently Asked Questions</h3>
-          <div className="space-y-4">
-            {faqs.map((faq, idx) => (
+        <div className="space-y-4">
+          {faqs.map((faq, idx) => (
               <div key={idx} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <button
+              <button
                   className="w-full text-left px-6 py-4 bg-gray-50 hover:bg-gray-100 font-medium focus:outline-none transition-colors"
-                  onClick={() => setOpenFAQ(openFAQ === idx ? null : idx)}
-                >
-                  {faq.question}
-                </button>
-                {openFAQ === idx && (
+                onClick={() => setOpenFAQ(openFAQ === idx ? null : idx)}
+              >
+                {faq.question}
+              </button>
+              {openFAQ === idx && (
                   <div className="px-6 py-4 bg-white text-gray-700 border-t border-gray-100">
-                    {faq.answer}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+                  {faq.answer}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
+      </div>
       </div>
 
       {/* Booking Modal */}

@@ -5,13 +5,13 @@ import { motion } from 'framer-motion';
 const values = [
   { 
     icon: <FaClock className="text-3xl text-primary" />, 
-    title: 'Support That Doesn\'t Sleep', 
-    desc: 'Our team is here 24/7. Day or night, questions or emergencies — we\'ve got you.' 
+    title: 'Support That Doesn’t Sleep', 
+    desc: 'Our team is here 24/7. Day or night, questions or emergencies — we’ve got your back.' 
   },
   { 
     icon: <FaUserFriends className="text-3xl text-primary" />, 
-    title: 'We\'ve Been There', 
-    desc: 'Built by people who\'ve experienced the same move — we understand every challenge.' 
+    title: 'We’ve Been There', 
+    desc: 'Built by people who’ve experienced the same move — we understand every challenge.' 
   },
   { 
     icon: <FaUsers className="text-3xl text-primary" />, 
@@ -24,9 +24,9 @@ const ValueProposition = () => (
   <section className="py-20 bg-neutral-light">
     <div className="container mx-auto px-4">
       <div className="text-center mb-16">
-        <h2 className="text-3xl md:text-4xl font-heading font-bold text-neutral-dark mb-6">Why Choose SettleEaze</h2>
+        <h2 className="text-3xl md:text-4xl font-heading font-bold text-neutral-dark mb-6">🌟 Why Choose SettleEaze</h2>
         <p className="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed">
-          Moving countries is exciting — but it can also be overwhelming. That's where we step in.
+          Moving countries is exciting — but it can also be overwhelming. That’s where we step in, with tailored support made just for Melbourne arrivals.
         </p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

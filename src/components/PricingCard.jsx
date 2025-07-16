@@ -71,7 +71,7 @@ const PricingCard = ({
             }
           `}
         >
-          {isCustom ? 'Get Custom Quote' : 'Book Now'}
+          {isCustom ? 'Build Custom Package' : 'Book Now'}
         </button>
       </div>
     </div>

@@ -6,13 +6,13 @@ const audiences = [
   {
     icon: <FaGraduationCap className="text-4xl text-indigo-600" />,
     title: 'International Students',
-    description: 'From admission to orientation, we help you get settled and confident.',
+    description: 'From admission to orientation, we help you get settled and confident in Melbourne.',
     color: 'indigo'
   },
   {
     icon: <FaBriefcase className="text-4xl text-blue-600" />,
     title: 'Skilled Workers & Professionals',
-    description: 'You focus on your career; we\'ll handle the rest.',
+    description: 'You focus on your career; we’ll handle the rest.',
     color: 'blue'
   },
   {
@@ -27,9 +27,11 @@ const WhoWeHelp = () => (
   <section className="py-20 bg-white">
     <div className="container mx-auto px-4">
       <div className="text-center mb-16">
-        <h2 className="text-3xl md:text-4xl font-heading font-bold text-neutral-dark mb-6">Who We Help</h2>
+        <h2 className="text-3xl md:text-4xl font-heading font-bold text-neutral-dark mb-6">👥 Who We Help</h2>
         <p className="text-lg text-gray-700 max-w-2xl mx-auto leading-relaxed">
-          Your smooth start starts here.
+          International Students – From admission to orientation, we help you get settled and confident in Melbourne.<br/>
+          Skilled Workers & Professionals – You focus on your career; we’ll handle the rest.<br/>
+          Families & New Residents – Need help with multiple arrivals? No worries — we support family moves too.
         </p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
