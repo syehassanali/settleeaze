@@ -10,6 +10,32 @@ const PricingCard = ({
   isCustom = false,
   totalPrice = null
 }) => {
+  if (isCustom) {
+    return (
+      <div className="relative bg-white rounded-2xl shadow-lg border-2 border-dashed border-gray-300 p-8 flex flex-col items-center text-center">
+        <h3 className="text-2xl font-bold mb-2 text-indigo-700">Custom Package</h3>
+        <div className="text-lg font-semibold text-gray-700 mb-2">Tailored to You — Get a Quote</div>
+        <p className="text-gray-600 mb-6">Don’t see a package that fits your needs? Build your own with just the services you want.</p>
+        <ul className="text-left mb-8 space-y-2">
+          <li>🔹 Mix & match services</li>
+          <li>🔹 Personalized support</li>
+          <li>🔹 Flexible scheduling</li>
+          <li>🔹 Priority assistance</li>
+          <li>🔹 Extended support period</li>
+          <li>🔹 Family/group discounts</li>
+          <li>🔹 Additional services available</li>
+          <li>🔹 Tailored to your journey</li>
+        </ul>
+        <button
+          onClick={() => onBookNow({ name, price, features, totalPrice, isCustom })}
+          className="w-full py-3 px-6 rounded-xl font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200 border-2 border-gray-300 transition-all duration-300 transform hover:scale-105"
+        >
+          Build Custom Package
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className={`
       relative bg-white rounded-2xl shadow-lg border-2 transition-all duration-300 hover:scale-105 hover:shadow-xl

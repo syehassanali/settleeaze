@@ -36,9 +36,9 @@ const HeroHeader = () => {
         <h1 className="text-white font-bold leading-tight text-4xl md:text-6xl mb-6">
           New beginnings made easier — in Australia.
         </h1>
-        <p className="text-white text-lg md:text-xl mb-8 max-w-2xl leading-relaxed">
-          Whether you’re coming to study, work, or chase new opportunities — SettleEaze takes the stress out of settling in <span className='font-semibold'>Melbourne, Australia</span>.<br /><br />From airport pickup to housing help, SIM cards to local orientation — we’ve got you covered from the moment you land.
-        </p>
+        <h2 className="text-white text-xl md:text-2xl font-medium mb-6 max-w-2xl">
+          Whether you’re coming to Australia to study, work, or explore new opportunities, SettleEaze takes the stress out of settling in.<br /><br />From airport pickup and housing help to SIM card setup and local orientation — we’ve got your arrival covered, start to finish.
+        </h2>
         <Link
           to="/packages"
           className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-semibold text-lg shadow-lg transition"
