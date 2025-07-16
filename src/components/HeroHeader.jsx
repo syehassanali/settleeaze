@@ -8,43 +8,34 @@ const images = [
   'https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=1600&q=80',
 ];
 
+const heroImage = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80"; // Placeholder: airport welcome
+
 const HeroHeader = () => {
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIndex((prev) => (prev + 1) % images.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
-    <section className="relative min-h-screen flex items-center justify-start px-6 md:px-16 bg-cover bg-center overflow-hidden">
-      {/* Carousel Images */}
-      {images.map((img, i) => (
-        <div
-          key={img}
-          className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ${i === index ? 'opacity-100 z-0' : 'opacity-0 z-0'}`}
-          style={{ backgroundImage: `url('${img}')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-          aria-hidden={i !== index}
-        />
-      ))}
+    <section className="relative min-h-[70vh] md:min-h-screen w-full flex items-center justify-center bg-black">
+      {/* Full-width Hero Image */}
+      <img
+        src={heroImage}
+        alt="Welcome to Melbourne"
+        className="absolute inset-0 w-full h-full object-cover object-center z-0"
+        draggable="false"
+      />
       {/* Overlay */}
       <div className="absolute inset-0 bg-black/60 z-10" />
-      {/* Content */}
-      <div className="relative z-20 max-w-4xl text-left">
-        <h1 className="text-white font-bold leading-tight text-4xl md:text-6xl mb-6">
-          New beginnings made easier — in Australia.
+      {/* Centered Content */}
+      <div className="relative z-20 flex flex-col items-center justify-center w-full px-4 md:px-0 text-center">
+        <h1 className="text-white font-bold text-4xl md:text-6xl mb-6 drop-shadow-lg" style={{ fontFamily: 'Montserrat, Poppins, sans-serif', textShadow: '0 2px 16px rgba(0,0,0,0.7)' }}>
+          New beginnings made easier.
         </h1>
-        <h2 className="text-white text-xl md:text-2xl font-medium mb-6 max-w-2xl">
+        <h2 className="text-white text-xl md:text-2xl font-medium mb-6 max-w-2xl drop-shadow" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.6)' }}>
           Whether you’re coming to Australia to study, work, or explore new opportunities, SettleEaze takes the stress out of settling in.<br /><br />From airport pickup and housing help to SIM card setup and local orientation — we’ve got your arrival covered, start to finish.
         </h2>
-        <Link
-          to="/packages"
-          className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-semibold text-lg shadow-lg transition"
+        <a
+          href="/packages"
+          className="mt-6 inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-semibold text-lg shadow-lg transition"
         >
           Explore Packages
-        </Link>
+        </a>
       </div>
     </section>
   );
