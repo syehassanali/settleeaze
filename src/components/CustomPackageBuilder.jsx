@@ -5,6 +5,7 @@ import { serviceOptions, calculateTotalPrice } from '../data/serviceOptions';
 const CustomPackageBuilder = ({ open, onClose, onBookCustom }) => {
   const [selectedServices, setSelectedServices] = useState([]);
   const [expandedService, setExpandedService] = useState(null);
+  const [showAllFeatures, setShowAllFeatures] = useState({});
 
   if (!open) return null;
 
@@ -114,36 +115,49 @@ const CustomPackageBuilder = ({ open, onClose, onBookCustom }) => {
                   {expandedService === serviceId && (
                     <div className="p-4 bg-white">
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {service.options.map((option) => (
-                          <div 
-                            key={option.name}
-                            className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
-                              getSelectedServiceOption(serviceId) === option.name
-                                ? 'border-indigo-500 bg-indigo-50'
-                                : 'border-gray-200 hover:border-indigo-300'
-                            }`}
-                            onClick={() => addService(serviceId, option.name)}
-                          >
-                            <div className="flex justify-between items-start mb-2">
-                              <h5 className="font-semibold text-gray-800">{option.name}</h5>
-                              <span className="text-lg font-bold text-indigo-600">${option.price}</span>
-                            </div>
-                            <p className="text-sm text-gray-600 mb-3">{option.description}</p>
-                            <ul className="space-y-1">
-                              {option.features.slice(0, 3).map((feature, index) => (
-                                <li key={index} className="flex items-center text-xs text-gray-600">
-                                  <FaCheck className="w-3 h-3 text-green-500 mr-2 flex-shrink-0" />
-                                  {feature}
-                                </li>
-                              ))}
+                        {service.options.map((option) => {
+                          const isExpanded = showAllFeatures[serviceId + option.name];
+                          return (
+                            <div 
+                              key={option.name}
+                              className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
+                                getSelectedServiceOption(serviceId) === option.name
+                                  ? 'border-indigo-500 bg-indigo-50'
+                                  : 'border-gray-200 hover:border-indigo-300'
+                              }`}
+                              onClick={() => addService(serviceId, option.name)}
+                            >
+                              <div className="flex justify-between items-start mb-2">
+                                <h5 className="font-semibold text-gray-800">{option.name}</h5>
+                                <span className="text-lg font-bold text-indigo-600">${option.price}</span>
+                              </div>
+                              <p className="text-sm text-gray-600 mb-3">{option.description}</p>
+                              <ul className="space-y-1">
+                                {(isExpanded ? option.features : option.features.slice(0, 3)).map((feature, index) => (
+                                  <li key={index} className="flex items-center text-xs text-gray-600">
+                                    <FaCheck className="w-3 h-3 text-green-500 mr-2 flex-shrink-0" />
+                                    {feature}
+                                  </li>
+                                ))}
+                              </ul>
                               {option.features.length > 3 && (
-                                <li className="text-xs text-gray-500">
-                                  +{option.features.length - 3} more features
-                                </li>
+                                <button
+                                  type="button"
+                                  className="text-xs text-blue-600 mt-2 underline hover:text-blue-800 focus:outline-none"
+                                  onClick={e => {
+                                    e.stopPropagation();
+                                    setShowAllFeatures(prev => ({
+                                      ...prev,
+                                      [serviceId + option.name]: !isExpanded
+                                    }));
+                                  }}
+                                >
+                                  {isExpanded ? 'Show Less' : `Show All (${option.features.length})`}
+                                </button>
                               )}
-                            </ul>
-                          </div>
-                        ))}
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   )}
