@@ -14,7 +14,12 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const storedUser = localStorage.getItem('user')
     if (storedUser) {
-      setUser(JSON.parse(storedUser))
+      const parsed = JSON.parse(storedUser)
+      // DEV PATCH: force admin role for local testing
+      if (process.env.NODE_ENV === 'development') {
+        parsed.role = 'admin'
+      }
+      setUser(parsed)
     }
     setLoading(false)
   }, [])
