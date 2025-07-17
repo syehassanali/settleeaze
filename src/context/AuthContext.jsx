@@ -35,6 +35,10 @@ export const AuthProvider = ({ children }) => {
 
       // Store userName if available
       if (response.data.user && response.data.user.name) {
+        // DEV PATCH: force admin role for local testing after login
+        if (process.env.NODE_ENV === 'development') {
+          response.data.user.role = 'admin';
+        }
         localStorage.setItem('userName', response.data.user.name);
         setUser(response.data.user);
         localStorage.setItem('user', JSON.stringify(response.data.user));
@@ -55,6 +59,10 @@ export const AuthProvider = ({ children }) => {
       const response = await api.post('/auth/register', userData)
       console.log('Register response:', response.data);
       setUser(response.data.user)
+      // DEV PATCH: force admin role for local testing after register
+      if (process.env.NODE_ENV === 'development') {
+        response.data.user.role = 'admin';
+      }
       localStorage.setItem('user', JSON.stringify(response.data.user))
       localStorage.setItem('token', response.data.token)
       localStorage.setItem('userId', response.data.user._id || response.data.user.id)

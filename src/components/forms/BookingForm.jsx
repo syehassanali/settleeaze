@@ -72,7 +72,7 @@ const BookingForm = ({ open, onClose, pkg }) => {
 
     if (pkg.services) {
       // Custom package
-      return (
+  return (
         <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-6 mb-6">
           <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
             <span className="mr-2">📦</span>
@@ -226,7 +226,7 @@ const BookingForm = ({ open, onClose, pkg }) => {
 
               {/* Flight Information */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
+            <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Arrival Time
                   </label>
@@ -237,8 +237,8 @@ const BookingForm = ({ open, onClose, pkg }) => {
                     onChange={handleChange} 
                     className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all" 
                   />
-                </div>
-                <div>
+            </div>
+            <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Flight Number (Optional)
                   </label>
@@ -285,18 +285,18 @@ const BookingForm = ({ open, onClose, pkg }) => {
                   <div className="flex items-center justify-center">
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
                     Processing...
-                  </div>
+            </div>
                 ) : (
                   'Confirm Booking'
                 )}
-              </button>
+            </button>
 
               {/* Security Note */}
               <p className="text-xs text-gray-500 text-center">
                 🔒 Your information is secure and will only be used for booking purposes
               </p>
-            </form>
-          )}
+          </form>
+        )}
         </div>
       </div>
     </div>

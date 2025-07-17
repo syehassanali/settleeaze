@@ -99,7 +99,16 @@ if (localToken) {
     { name: 'Contact', path: '/contact' },
   ];
   // Admin check (for demo, show if token exists; replace with real admin check)
-  const isAdmin = !!token; // Replace with real admin check if available
+  let isAdmin = false;
+  try {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      const userObj = JSON.parse(userStr);
+      isAdmin = userObj.role === 'admin';
+    }
+  } catch (e) {
+    isAdmin = false;
+  }
 
   return (
     <header 
