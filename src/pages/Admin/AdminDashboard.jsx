@@ -80,7 +80,7 @@ const AdminDashboard = () => {
       ]) => {
         setUsers(usersRes.data);
         setServices(servicesRes.data);
-        setBookings(bookingsRes.data);
+        setBookings(Array.isArray(bookingsRes.data) ? bookingsRes.data : bookingsRes.data.bookings || []);
         setPackages(packagesRes.data);
         setInquiries(inquiriesRes.data);
         setAdminUsers(adminUsersRes.data);
