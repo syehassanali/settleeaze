@@ -41,9 +41,12 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const filteredUsers = users.filter(u =>
-    (u.profile.firstName + ' ' + u.profile.lastName + ' ' + u.email).toLowerCase().includes(userFilter.toLowerCase())
-  );
+  const filteredUsers = users.filter(u => {
+    const firstName = u.profile?.firstName || u.name || '';
+    const lastName = u.profile?.lastName || '';
+    const email = u.email || '';
+    return (firstName + ' ' + lastName + ' ' + email).toLowerCase().includes(userFilter.toLowerCase());
+  });
 
   // Fetch all dashboard data
   useEffect(() => {
