@@ -25,4 +25,14 @@ router.get('/me', auth, async (req, res) => {
   res.json(user);
 });
 
+// Admin: Get all users (for /api/admin/users)
+router.get('/', async (req, res) => {
+  try {
+    const users = await User.find().sort({ createdAt: -1 });
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 export default router; 
