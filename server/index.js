@@ -7,6 +7,14 @@ import session from 'express-session';
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/user.js';
 import bookingRoutes from './routes/booking.js';
+import packageRoutes from './routes/package.js';
+import inquiryRoutes from './routes/inquiry.js';
+import adminUserRoutes from './routes/adminUser.js';
+import paymentRoutes from './routes/payment.js';
+import logRoutes from './routes/log.js';
+import notificationRoutes from './routes/notification.js';
+import cmsRoutes from './routes/cms.js';
+import statsRoutes from './routes/stats.js';
 import './passport.js';
 import fs from 'fs';
 import serveStatic from 'serve-static';
@@ -49,6 +57,15 @@ app.use(passport.session());
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/booking', bookingRoutes);
+// Register admin routes
+app.use('/api/admin/packages', packageRoutes);
+app.use('/api/admin/inquiries', inquiryRoutes);
+app.use('/api/admin/admin-users', adminUserRoutes);
+app.use('/api/admin/payments', paymentRoutes);
+app.use('/api/admin/logs', logRoutes);
+app.use('/api/admin/notifications', notificationRoutes);
+app.use('/api/admin/cms', cmsRoutes);
+app.use('/api/admin/stats', statsRoutes);
 
 // MongoDB connection
 const mongoURI = process.env.MONGO_URL || process.env.MONGO_URI || process.env.DATABASE_URL;

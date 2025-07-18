@@ -14,87 +14,97 @@ const summaryTiles = [
 const AdminDashboard = () => {
   const [tab, setTab] = useState('overview');
   const [stats, setStats] = useState({ totalUsers: 0, activeUsers: 0, customPackages: 0, bookings: 0, inquiries: 0, revenue: 0 });
-  const [users, setUsers] = useState([])
-  const [services, setServices] = useState([])
-  const [bookings, setBookings] = useState([])
+  const [users, setUsers] = useState([]);
+  const [services, setServices] = useState([]);
+  const [bookings, setBookings] = useState([]);
+  const [packages, setPackages] = useState([]);
+  const [inquiries, setInquiries] = useState([]);
+  const [adminUsers, setAdminUsers] = useState([]);
+  const [payments, setPayments] = useState([]);
+  const [logs, setLogs] = useState([]);
+  const [cms, setCms] = useState({});
+  const [cmsEdit, setCmsEdit] = useState({});
+  const [bannerImage, setBannerImage] = useState('');
   const [userFilter, setUserFilter] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
   const [serviceModalOpen, setServiceModalOpen] = useState(false);
   const [editingService, setEditingService] = useState(null);
-  const [packages, setPackages] = useState([
-    { _id: '1', name: 'Basic', price: 99, services: ['Airport Pickup', 'SIM Card'], mostPopular: false, sort: 1, image: '/dummy/airport.jpg' },
-    { _id: '2', name: 'Standard', price: 199, services: ['Airport Pickup', 'SIM Card', 'Accommodation'], mostPopular: false, sort: 2, image: '/dummy/housing.jpg' },
-    { _id: '3', name: 'Premium', price: 299, services: ['Airport Pickup', 'SIM Card', 'Accommodation', 'Bank Setup'], mostPopular: true, sort: 3, image: '/dummy/bank.jpg' },
-  ]);
   const [packageModalOpen, setPackageModalOpen] = useState(false);
   const [editingPackage, setEditingPackage] = useState(null);
   const [bookingFilter, setBookingFilter] = useState('');
   const [selectedBooking, setSelectedBooking] = useState(null);
-  const [inquiries, setInquiries] = useState([
-    { _id: '1', type: 'Contact', subject: 'Arrival question', date: '2024-06-01', status: 'Unread', message: 'What time is airport pickup?', assigned: '', note: '' },
-    { _id: '2', type: 'Custom Package', subject: 'Group discount', date: '2024-06-02', status: 'Read', message: 'Do you offer group rates?', assigned: 'Priya', note: 'Follow up next week' },
-  ]);
   const [inquiryFilter, setInquiryFilter] = useState('');
   const [selectedInquiry, setSelectedInquiry] = useState(null);
-  const [cms, setCms] = useState({
-    homepageHeadline: 'New beginnings made easier.',
-    homepageSubheading: 'Whether you’re coming to Australia to study, work, or explore new opportunities, SettleEaze takes the stress out of settling in.',
-    heroText: 'From airport pickup and housing help to SIM card setup and local orientation — we’ve got your arrival covered, start to finish.',
-    footerText: 'Currently serving Melbourne, Australia',
-    servicesDesc: 'Discover flexible settlement services for every type of mover.',
-    packagesDesc: 'Choose from Basic, Standard, or Premium to match your journey.',
-    faqs: 'Q: Can I upgrade my package later?\nA: Yes, you can upgrade at any time.',
-    about: 'SettleEaze is dedicated to making your move to Australia smooth and stress-free.',
-    terms: 'By using SettleEaze, you agree to our terms and conditions.'
-  });
-  const [cmsEdit, setCmsEdit] = useState(cms);
-  const [bannerImage, setBannerImage] = useState('');
-  const [adminUsers, setAdminUsers] = useState([
-    { _id: '1', name: 'Admin One', email: 'admin1@settleeaze.com', role: 'Super Admin' },
-    { _id: '2', name: 'Priya', email: 'priya@settleeaze.com', role: 'Content Manager' },
-    { _id: '3', name: 'Amit', email: 'amit@settleeaze.com', role: 'Booking Agent' },
-  ]);
   const [adminModalOpen, setAdminModalOpen] = useState(false);
   const [editingAdmin, setEditingAdmin] = useState(null);
-  const [notifications, setNotifications] = useState([
-    { id: 1, type: 'user', message: 'New user registered: Jane Smith', time: '2m ago' },
-    { id: 2, type: 'booking', message: 'New booking: Basic Package', time: '10m ago' },
-    { id: 3, type: 'error', message: 'Payment failed for user johndoe@example.com', time: '1h ago' },
-    { id: 4, type: 'suspicious', message: 'Suspicious login detected', time: '2h ago' },
-  ]);
-  filteredUsers = users.filter(u =>
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const filteredUsers = users.filter(u =>
     (u.profile.firstName + ' ' + u.profile.lastName + ' ' + u.email).toLowerCase().includes(userFilter.toLowerCase())
   );
 
+  // Fetch all dashboard data
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [usersRes, servicesRes, bookingsRes] = await Promise.all([
-          api.get('/admin/users'),
-          api.get('/admin/services'),
-          api.get('/admin/bookings'),
-        ])
-        setUsers(usersRes.data)
-        setServices(servicesRes.data)
-        setBookings(bookingsRes.data)
-      } catch (error) {
-        console.error('Error fetching admin data:', error)
-      }
-    }
-
-    fetchData()
-  }, [])
+    setLoading(true);
+    setError(null);
+    Promise.all([
+      api.get('/admin/users'),
+      api.get('/admin/services'),
+      api.get('/admin/bookings'),
+      api.get('/admin/packages'), // <-- You must implement this endpoint in your backend
+      api.get('/admin/inquiries'), // <-- You must implement this endpoint in your backend
+      api.get('/admin/admin-users'), // <-- You must implement this endpoint in your backend
+      api.get('/admin/payments'), // <-- You must implement this endpoint in your backend
+      api.get('/admin/logs'), // <-- You must implement this endpoint in your backend
+      api.get('/admin/notifications'), // <-- You must implement this endpoint in your backend
+      api.get('/admin/cms'), // <-- You must implement this endpoint in your backend
+      api.get('/admin/stats'), // <-- You must implement this endpoint in your backend
+    ])
+      .then(([
+        usersRes,
+        servicesRes,
+        bookingsRes,
+        packagesRes,
+        inquiriesRes,
+        adminUsersRes,
+        paymentsRes,
+        logsRes,
+        notificationsRes,
+        cmsRes,
+        statsRes,
+      ]) => {
+        setUsers(usersRes.data);
+        setServices(servicesRes.data);
+        setBookings(bookingsRes.data);
+        setPackages(packagesRes.data);
+        setInquiries(inquiriesRes.data);
+        setAdminUsers(adminUsersRes.data);
+        setPayments(paymentsRes.data);
+        setLogs(logsRes.data);
+        setNotifications(notificationsRes.data);
+        setCms(cmsRes.data);
+        setCmsEdit(cmsRes.data);
+        setStats(statsRes.data);
+      })
+      .catch((err) => {
+        setError('Failed to load dashboard data.');
+        console.error('Error fetching admin data:', err);
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   useEffect(() => {
     // Fetch stats for summary tiles (replace with real API calls)
-    setStats({
-      totalUsers: 1200,
-      activeUsers: 340,
-      customPackages: 27,
-      bookings: 410,
-      inquiries: 8,
-      revenue: 12500
-    });
+    // setStats({
+    //   totalUsers: 1200,
+    //   activeUsers: 340,
+    //   customPackages: 27,
+    //   bookings: 410,
+    //   inquiries: 8,
+    //   revenue: 12500
+    // });
   }, []);
 
   const handleTabChange = (event, newValue) => {
@@ -110,6 +120,13 @@ const AdminDashboard = () => {
         console.error('Error deleting service:', error)
       }
     }
+  }
+
+  if (loading) {
+    return <div className="flex items-center justify-center min-h-screen text-xl font-bold text-indigo-700">Loading dashboard...</div>;
+  }
+  if (error) {
+    return <div className="flex items-center justify-center min-h-screen text-xl font-bold text-red-600">{error}</div>;
   }
 
   return (
@@ -624,30 +641,18 @@ const AdminDashboard = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr className="border-b hover:bg-gray-50">
-                        <td className="px-4 py-2">2024-07-20</td>
-                        <td className="px-4 py-2">John Doe</td>
-                        <td className="px-4 py-2">$1,200</td>
-                        <td className="px-4 py-2">Bank Transfer</td>
-                        <td className="px-4 py-2">Completed</td>
-                        <td className="px-4 py-2">Booking ID: 123456789</td>
-                      </tr>
-                      <tr className="border-b hover:bg-gray-50">
-                        <td className="px-4 py-2">2024-07-19</td>
-                        <td className="px-4 py-2">Jane Smith</td>
-                        <td className="px-4 py-2">$99</td>
-                        <td className="px-4 py-2">Credit Card</td>
-                        <td className="px-4 py-2">Completed</td>
-                        <td className="px-4 py-2">Booking ID: 987654321</td>
-                      </tr>
-                      <tr className="border-b hover:bg-gray-50">
-                        <td className="px-4 py-2">2024-07-18</td>
-                        <td className="px-4 py-2">Peter Jones</td>
-                        <td className="px-4 py-2">$2,500</td>
-                        <td className="px-4 py-2">Bank Transfer</td>
-                        <td className="px-4 py-2">Pending</td>
-                        <td className="px-4 py-2">Booking ID: 1122334455</td>
-                      </tr>
+                      {payments.map(payment => (
+                        <tr key={payment._id} className="border-b hover:bg-gray-50">
+                          <td className="px-4 py-2">{payment.date}</td>
+                          <td className="px-4 py-2">{payment.user?.profile?.firstName} {payment.user?.profile?.lastName}</td>
+                          <td className="px-4 py-2">${payment.amount}</td>
+                          <td className="px-4 py-2">{payment.method}</td>
+                          <td className="px-4 py-2">
+                            <span className={`px-2 py-1 rounded text-xs font-semibold ${payment.status==='Completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>{payment.status}</span>
+                          </td>
+                          <td className="px-4 py-2">Booking ID: {payment.bookingId}</td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>
@@ -678,24 +683,14 @@ const AdminDashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="border-b hover:bg-gray-50">
-                    <td className="px-4 py-2">2024-07-20 10:00</td>
-                    <td className="px-4 py-2">Login</td>
-                    <td className="px-4 py-2">admin@settleeaze.com</td>
-                    <td className="px-4 py-2">Successful login from IP: 123.45.67.89</td>
-                  </tr>
-                  <tr className="border-b hover:bg-gray-50">
-                    <td className="px-4 py-2">2024-07-20 10:05</td>
-                    <td className="px-4 py-2">User Update</td>
-                    <td className="px-4 py-2">admin@settleeaze.com</td>
-                    <td className="px-4 py-2">Suspended user 'johndoe@example.com'</td>
-                  </tr>
-                  <tr className="border-b hover:bg-gray-50">
-                    <td className="px-4 py-2">2024-07-20 10:10</td>
-                    <td className="px-4 py-2">Booking Creation</td>
-                    <td className="px-4 py-2">user@example.com</td>
-                    <td className="px-4 py-2">New booking created for user 'Jane Smith' (Booking ID: 987654321)</td>
-                  </tr>
+                  {logs.map(log => (
+                    <tr key={log._id} className="border-b hover:bg-gray-50">
+                      <td className="px-4 py-2">{log.date}</td>
+                      <td className="px-4 py-2">{log.action}</td>
+                      <td className="px-4 py-2">{log.user}</td>
+                      <td className="px-4 py-2">{log.details}</td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>

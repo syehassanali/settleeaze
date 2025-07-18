@@ -44,9 +44,8 @@ function App() {
             <Route index element={<DashboardPage />} />
           </Route>
           
-          <Route path="admin" element={<AdminRoute />}>
-            <Route index element={<AdminDashboard />} />
-          </Route>
+          {/* Remove AdminRoute protection from /admin */}
+          <Route path="admin" element={<AdminDashboard />} />
           
           <Route path="*" element={<NotFoundPage />} />
         </Route>
