@@ -41,12 +41,70 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Service modal form state
+  const [serviceForm, setServiceForm] = useState({ title: '', category: '', price: '', image: '', description: '' });
+
+  // Open modal for add/edit
+  const openServiceModal = (service = null) => {
+    setEditingService(service);
+    setServiceForm(service ? { ...service } : { title: '', category: '', price: '', image: '', description: '' });
+    setServiceModalOpen(true);
+  };
+
+  // Handle form input
+  const handleServiceInput = e => {
+    const { name, value } = e.target;
+    setServiceForm(f => ({ ...f, [name]: value }));
+  };
+
+  // Save service (add or edit)
+  const handleServiceSave = async e => {
+    e.preventDefault();
+    try {
+      if (editingService) {
+        // Edit
+        const res = await api.put(`/admin/services/${editingService._id}`, serviceForm);
+        setServices(services.map(s => s._id === editingService._id ? res.data : s));
+      } else {
+        // Add
+        const res = await api.post('/admin/services', serviceForm);
+        setServices([res.data, ...services]);
+      }
+      setServiceModalOpen(false);
+    } catch (err) {
+      alert('Failed to save service.');
+    }
+  };
+
+  // Delete service
+  const handleDeleteService = async id => {
+    if (window.confirm('Are you sure you want to delete this service?')) {
+      try {
+        await api.delete(`/admin/services/${id}`);
+        setServices(services.filter(service => service._id !== id));
+      } catch (error) {
+        alert('Error deleting service.');
+      }
+    }
+  };
+
   const filteredUsers = users.filter(u => {
     const firstName = u.profile?.firstName || u.name || '';
     const lastName = u.profile?.lastName || '';
     const email = u.email || '';
     return (firstName + ' ' + lastName + ' ' + email).toLowerCase().includes(userFilter.toLowerCase());
   });
+
+  // Booking status update handler
+  const handleBookingStatusChange = async (bookingId, newStatus) => {
+    try {
+      await api.patch(`/admin/bookings/${bookingId}`, { status: newStatus });
+      setBookings(prev => prev.map(b => b._id === bookingId ? { ...b, status: newStatus } : b));
+    } catch (err) {
+      alert('Failed to update booking status.');
+      console.error('Booking status update error:', err);
+    }
+  };
 
   // Fetch all dashboard data
   useEffect(() => {
@@ -114,17 +172,6 @@ const AdminDashboard = () => {
     setTab(newValue)
   }
 
-  const handleDeleteService = async (id) => {
-    if (window.confirm('Are you sure you want to delete this service?')) {
-      try {
-        await api.delete(`/admin/services/${id}`)
-        setServices(services.filter(service => service._id !== id))
-      } catch (error) {
-        console.error('Error deleting service:', error)
-      }
-    }
-  }
-
   if (loading) {
     return <div className="flex items-center justify-center min-h-screen text-xl font-bold text-indigo-700">Loading dashboard...</div>;
   }
@@ -151,7 +198,7 @@ const AdminDashboard = () => {
         <button className="mt-10 w-full bg-red-600 hover:bg-red-700 py-2 rounded-lg font-semibold" onClick={()=>{/* logout logic */}}>Logout</button>
       </aside>
       {/* Main Content */}
-      <main className="flex-1 p-8">
+      <main className="flex-1 p-8 pt-24 md:pt-20">
         {/* Topbar */}
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-neutral-dark">Admin Dashboard</h1>
@@ -279,7 +326,7 @@ const AdminDashboard = () => {
           <div>
             <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
               <h2 className="text-2xl font-bold text-neutral-dark">Service Management</h2>
-              <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition" onClick={()=>{setEditingService(null);setServiceModalOpen(true);}}><FaPlus />Add New Service</button>
+              <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition" onClick={()=>openServiceModal(null)}><FaPlus />Add New Service</button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
               {services.map(service => (
@@ -289,8 +336,8 @@ const AdminDashboard = () => {
                   <div className="text-sm text-gray-500 mb-2">{service.category}</div>
                   <div className="text-green-600 font-semibold mb-2">${service.price}</div>
                   <div className="flex gap-2 mt-2">
-                    <button className="text-blue-600 hover:text-blue-800" title="Edit" onClick={()=>{setEditingService(service);setServiceModalOpen(true);}}><FaEdit /></button>
-                    <button className="text-red-600 hover:text-red-800" title="Delete"><FaTrash /></button>
+                    <button className="text-blue-600 hover:text-blue-800" title="Edit" onClick={()=>openServiceModal(service)}><FaEdit /></button>
+                    <button className="text-red-600 hover:text-red-800" title="Delete" onClick={()=>handleDeleteService(service._id)}><FaTrash /></button>
                   </div>
                 </div>
               ))}
@@ -301,26 +348,26 @@ const AdminDashboard = () => {
                 <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-8 relative">
                   <button onClick={()=>setServiceModalOpen(false)} className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-2xl">&times;</button>
                   <h2 className="text-xl font-bold mb-4 text-indigo-700">{editingService ? 'Edit Service' : 'Add New Service'}</h2>
-                  <form className="space-y-4">
+                  <form className="space-y-4" onSubmit={handleServiceSave}>
                     <div>
                       <label className="block text-sm font-medium mb-1 text-gray-700">Title</label>
-                      <input type="text" className="w-full border border-gray-300 rounded-lg px-4 py-2" defaultValue={editingService?.title || ''} />
+                      <input type="text" name="title" className="w-full border border-gray-300 rounded-lg px-4 py-2" value={serviceForm.title} onChange={handleServiceInput} required />
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1 text-gray-700">Category</label>
-                      <input type="text" className="w-full border border-gray-300 rounded-lg px-4 py-2" defaultValue={editingService?.category || ''} />
+                      <input type="text" name="category" className="w-full border border-gray-300 rounded-lg px-4 py-2" value={serviceForm.category} onChange={handleServiceInput} />
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1 text-gray-700">Price</label>
-                      <input type="number" className="w-full border border-gray-300 rounded-lg px-4 py-2" defaultValue={editingService?.price || ''} />
+                      <input type="number" name="price" className="w-full border border-gray-300 rounded-lg px-4 py-2" value={serviceForm.price} onChange={handleServiceInput} required />
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1 text-gray-700">Image URL</label>
-                      <input type="text" className="w-full border border-gray-300 rounded-lg px-4 py-2" defaultValue={editingService?.image || ''} />
+                      <input type="text" name="image" className="w-full border border-gray-300 rounded-lg px-4 py-2" value={serviceForm.image} onChange={handleServiceInput} />
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1 text-gray-700">Description</label>
-                      <textarea className="w-full border border-gray-300 rounded-lg px-4 py-2" rows={3} defaultValue={editingService?.description || ''}></textarea>
+                      <textarea name="description" className="w-full border border-gray-300 rounded-lg px-4 py-2" rows={3} value={serviceForm.description} onChange={handleServiceInput}></textarea>
                     </div>
                     <div className="flex gap-2 mt-6">
                       <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition">Save</button>
@@ -430,7 +477,7 @@ const AdminDashboard = () => {
                       <td className="px-4 py-2">{booking.user?.profile?.firstName} {booking.user?.profile?.lastName}</td>
                       <td className="px-4 py-2">{booking.packageName}</td>
                       <td className="px-4 py-2">
-                        <select className="px-2 py-1 rounded border" value={booking.status} onChange={e => {/* update status logic */}}>
+                        <select className="px-2 py-1 rounded border" value={booking.status} onChange={e => handleBookingStatusChange(booking._id, e.target.value)}>
                           <option>Pending</option>
                           <option>Confirmed</option>
                           <option>Completed</option>
@@ -600,28 +647,35 @@ const AdminDashboard = () => {
         {tab==='bank' && (
           <div>
             <h2 className="text-2xl font-bold text-neutral-dark mb-6">Bank Management</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white rounded-xl shadow p-6">
+            <form className="grid grid-cols-1 md:grid-cols-2 gap-6" onSubmit={async e => {
+              e.preventDefault();
+              try {
+                await api.put(`/admin/cms/${cmsEdit._id}`, { ...cmsEdit });
+                setCms(cmsEdit);
+                alert('Bank info updated!');
+              } catch (err) {
+                alert('Failed to update bank info.');
+              }
+            }}>
+              <div className="bg-white rounded-xl shadow p-6 flex flex-col gap-4">
                 <h3 className="text-lg font-bold mb-2 text-indigo-700">Bank Details</h3>
-                <p className="text-gray-700 mb-4">Current Bank: ANZ (Account: 123456789)</p>
-                <p className="text-gray-700 mb-4">Routing Number: 123456789</p>
-                <p className="text-gray-700 mb-4">SWIFT Code: ABCDEF123456789</p>
-                <p className="text-gray-700 mb-4">IBAN: GB1234567890123456789012</p>
-                <p className="text-gray-700 mb-4">Account Holder: SettleEaze Pty Ltd</p>
-                <p className="text-gray-700 mb-4">Account Number: 123456789</p>
-                <p className="text-gray-700 mb-4">Bank Name: ANZ Bank</p>
-                <p className="text-gray-700 mb-4">Branch: Melbourne CBD</p>
-                <p className="text-gray-700 mb-4">Bank Address: 123 Main St, Melbourne VIC 3000</p>
-                <p className="text-gray-700 mb-4">Bank Phone: +61 3 9999 9999</p>
-                <p className="text-gray-700 mb-4">Bank Email: info@settleeaze.com</p>
+                <input type="text" className="border rounded px-3 py-2" placeholder="Current Bank" value={cmsEdit.bankName || ''} onChange={e=>setCmsEdit({...cmsEdit, bankName: e.target.value})} />
+                <input type="text" className="border rounded px-3 py-2" placeholder="Account Number" value={cmsEdit.accountNumber || ''} onChange={e=>setCmsEdit({...cmsEdit, accountNumber: e.target.value})} />
+                <input type="text" className="border rounded px-3 py-2" placeholder="Routing Number" value={cmsEdit.routingNumber || ''} onChange={e=>setCmsEdit({...cmsEdit, routingNumber: e.target.value})} />
+                <input type="text" className="border rounded px-3 py-2" placeholder="SWIFT Code" value={cmsEdit.swiftCode || ''} onChange={e=>setCmsEdit({...cmsEdit, swiftCode: e.target.value})} />
+                <input type="text" className="border rounded px-3 py-2" placeholder="IBAN" value={cmsEdit.iban || ''} onChange={e=>setCmsEdit({...cmsEdit, iban: e.target.value})} />
+                <input type="text" className="border rounded px-3 py-2" placeholder="Account Holder" value={cmsEdit.accountHolder || ''} onChange={e=>setCmsEdit({...cmsEdit, accountHolder: e.target.value})} />
+                <input type="text" className="border rounded px-3 py-2" placeholder="Branch" value={cmsEdit.branch || ''} onChange={e=>setCmsEdit({...cmsEdit, branch: e.target.value})} />
+                <input type="text" className="border rounded px-3 py-2" placeholder="Bank Address" value={cmsEdit.bankAddress || ''} onChange={e=>setCmsEdit({...cmsEdit, bankAddress: e.target.value})} />
+                <input type="text" className="border rounded px-3 py-2" placeholder="Bank Phone" value={cmsEdit.bankPhone || ''} onChange={e=>setCmsEdit({...cmsEdit, bankPhone: e.target.value})} />
+                <input type="text" className="border rounded px-3 py-2" placeholder="Bank Email" value={cmsEdit.bankEmail || ''} onChange={e=>setCmsEdit({...cmsEdit, bankEmail: e.target.value})} />
               </div>
-              <div className="bg-white rounded-xl shadow p-6">
+              <div className="bg-white rounded-xl shadow p-6 flex flex-col gap-4">
                 <h3 className="text-lg font-bold mb-2 text-indigo-700">Bank Transfer Instructions</h3>
-                <p className="text-gray-700 mb-4">Please transfer the total amount to the bank account provided above. Include your name and booking ID in the transaction notes.</p>
-                <p className="text-gray-700 mb-4">Once payment is confirmed, we will process your booking and send you a confirmation email.</p>
-                <p className="text-gray-700 mb-4">For urgent matters, please contact us directly at +61 3 9999 9999 or info@settleeaze.com</p>
+                <textarea className="border rounded px-3 py-2" rows={6} placeholder="Bank Transfer Instructions" value={cmsEdit.bankInstructions || ''} onChange={e=>setCmsEdit({...cmsEdit, bankInstructions: e.target.value})}></textarea>
+                <button type="submit" className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition">Save</button>
               </div>
-            </div>
+            </form>
           </div>
         )}
         {/* Payments Tab */}
