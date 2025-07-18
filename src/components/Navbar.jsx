@@ -141,16 +141,15 @@ if (localToken) {
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-600 transition-all duration-300 group-hover:w-full"></span>
             </Link>
           ))}
-          {isAdmin && (
-            <Link
-              to="/admin"
-              className="font-medium text-gray-800 hover:text-indigo-700 transition-colors duration-300 relative group"
-              onClick={() => setMobileOpen(false)}
-            >
-              Admin
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-600 transition-all duration-300 group-hover:w-full"></span>
-            </Link>
-          )}
+          {/* Always show Admin link */}
+          <Link
+            to="/admin"
+            className="font-medium text-gray-800 hover:text-indigo-700 transition-colors duration-300 relative group"
+            onClick={() => setMobileOpen(false)}
+          >
+            Admin
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-600 transition-all duration-300 group-hover:w-full"></span>
+          </Link>
         </nav>
 
         {/* Auth Buttons - Right Side */}
@@ -235,15 +234,14 @@ if (localToken) {
                 {item.name}
               </Link>
             ))}
-            {isAdmin && (
-              <Link
-                to="/admin"
-                className="px-6 py-3 font-medium text-gray-700 hover:bg-indigo-50 transition-colors"
-                onClick={() => setMobileOpen(false)}
-              >
-                Admin
-              </Link>
-            )}
+            {/* Always show Admin link */}
+            <Link
+              to="/admin"
+              className="px-6 py-3 font-medium text-gray-700 hover:bg-indigo-50 transition-colors"
+              onClick={() => setMobileOpen(false)}
+            >
+              Admin
+            </Link>
           </nav>
           <div className="px-6 py-4 border-t border-gray-100">
             {token ? (
