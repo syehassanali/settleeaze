@@ -329,20 +329,23 @@ const AdminDashboard = () => {
               <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition" onClick={()=>openServiceModal(null)}><FaPlus />Add New Service</button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-              {services.map(service => (
-                <div key={service._id} className="bg-white rounded-xl shadow p-6 flex flex-col items-center text-center">
-                  <img src={service.image || '/dummy/airport.jpg'} alt={service.title} className="w-full h-32 object-cover rounded mb-4" />
-                  <h3 className="text-lg font-bold mb-1 text-indigo-700">{service.title}</h3>
-                  <div className="text-sm text-gray-500 mb-2">{service.category}</div>
-                  <div className="text-green-600 font-semibold mb-2">${service.price}</div>
-                  <div className="flex gap-2 mt-2">
-                    <button className="text-blue-600 hover:text-blue-800" title="Edit" onClick={()=>openServiceModal(service)}><FaEdit /></button>
-                    <button className="text-red-600 hover:text-red-800" title="Delete" onClick={()=>handleDeleteService(service._id)}><FaTrash /></button>
+              {services.length === 0 ? (
+                <div className="col-span-full text-center text-gray-500 py-8">No services found. Click "Add New Service" to create one.</div>
+              ) : (
+                services.map(service => (
+                  <div key={service._id} className="bg-white rounded-xl shadow p-6 flex flex-col items-center text-center">
+                    <img src={service.image || '/dummy/airport.jpg'} alt={service.title} className="w-full h-32 object-cover rounded mb-4" />
+                    <h3 className="text-lg font-bold mb-1 text-indigo-700">{service.title}</h3>
+                    <div className="text-sm text-gray-500 mb-2">{service.category}</div>
+                    <div className="text-green-600 font-semibold mb-2">${service.price}</div>
+                    <div className="flex gap-2 mt-2">
+                      <button className="text-blue-600 hover:text-blue-800" title="Edit" onClick={()=>openServiceModal(service)}><FaEdit /></button>
+                      <button className="text-red-600 hover:text-red-800" title="Delete" onClick={()=>handleDeleteService(service._id)}><FaTrash /></button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
-            {/* Add/Edit Service Modal */}
             {serviceModalOpen && (
               <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
                 <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-8 relative">
@@ -377,67 +380,6 @@ const AdminDashboard = () => {
                 </div>
               </div>
             )}
-            {/* Package Management */}
-            <div className="mt-16">
-              <h2 className="text-2xl font-bold text-neutral-dark mb-4">Package Management</h2>
-              <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition mb-6" onClick={()=>{setEditingPackage(null);setPackageModalOpen(true);}}><FaPlus />Add New Package</button>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-                {packages.sort((a,b)=>a.sort-b.sort).map(pkg => (
-                  <div key={pkg._id} className={`bg-white rounded-xl shadow p-6 flex flex-col items-center text-center border-2 ${pkg.mostPopular ? 'border-yellow-400' : 'border-gray-100'}`}> 
-                    <img src={pkg.image} alt={pkg.name} className="w-full h-32 object-cover rounded mb-4" />
-                    <div className="flex items-center gap-2 mb-2">
-                      <h3 className="text-lg font-bold text-indigo-700">{pkg.name}</h3>
-                      {pkg.mostPopular && <span className="bg-yellow-400 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1"><FaStar className="text-xs" />Most Popular</span>}
-                    </div>
-                    <div className="text-green-600 font-semibold mb-2">${pkg.price}</div>
-                    <div className="mb-2 text-sm text-gray-500">Includes: {pkg.services.join(', ')}</div>
-                    <div className="flex gap-2 mt-2">
-                      <button className="text-blue-600 hover:text-blue-800" title="Edit" onClick={()=>{setEditingPackage(pkg);setPackageModalOpen(true);}}><FaEdit /></button>
-                      <button className="text-red-600 hover:text-red-800" title="Delete"><FaTrash /></button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              {/* Add/Edit Package Modal */}
-              {packageModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-                  <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-8 relative">
-                    <button onClick={()=>setPackageModalOpen(false)} className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-2xl">&times;</button>
-                    <h2 className="text-xl font-bold mb-4 text-indigo-700">{editingPackage ? 'Edit Package' : 'Add New Package'}</h2>
-                    <form className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-1 text-gray-700">Name</label>
-                        <input type="text" className="w-full border border-gray-300 rounded-lg px-4 py-2" defaultValue={editingPackage?.name || ''} />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1 text-gray-700">Price</label>
-                        <input type="number" className="w-full border border-gray-300 rounded-lg px-4 py-2" defaultValue={editingPackage?.price || ''} />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1 text-gray-700">Included Services (comma separated)</label>
-                        <input type="text" className="w-full border border-gray-300 rounded-lg px-4 py-2" defaultValue={editingPackage?.services?.join(', ') || ''} />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1 text-gray-700">Sort Order</label>
-                        <input type="number" className="w-full border border-gray-300 rounded-lg px-4 py-2" defaultValue={editingPackage?.sort || ''} />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1 text-gray-700">Image URL</label>
-                        <input type="text" className="w-full border border-gray-300 rounded-lg px-4 py-2" defaultValue={editingPackage?.image || ''} />
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <input type="checkbox" id="mostPopular" defaultChecked={editingPackage?.mostPopular} />
-                        <label htmlFor="mostPopular" className="text-sm text-gray-700">Most Popular</label>
-                      </div>
-                      <div className="flex gap-2 mt-6">
-                        <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition">Save</button>
-                        <button type="button" className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition" onClick={()=>setPackageModalOpen(false)}>Cancel</button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              )}
-            </div>
           </div>
         )}
         {/* Bookings Management Tab */}
