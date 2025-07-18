@@ -53,9 +53,9 @@ const AdminDashboard = () => {
     setLoading(true);
     setError(null);
     Promise.all([
-      api.get('/admin/users'),
-      api.get('/admin/services'),
-      api.get('/admin/bookings'),
+          api.get('/admin/users'),
+          api.get('/admin/services'),
+          api.get('/admin/bookings'),
       api.get('/admin/packages'), // <-- You must implement this endpoint in your backend
       api.get('/admin/inquiries'), // <-- You must implement this endpoint in your backend
       api.get('/admin/admin-users'), // <-- You must implement this endpoint in your backend
@@ -231,9 +231,9 @@ const AdminDashboard = () => {
                 <tbody>
                   {filteredUsers.map(user => (
                     <tr key={user._id} className="border-b hover:bg-gray-50">
-                      <td className="px-4 py-2 cursor-pointer" onClick={()=>setSelectedUser(user)}>{user.profile.firstName} {user.profile.lastName}</td>
-                      <td className="px-4 py-2">{user.email}</td>
-                      <td className="px-4 py-2">{user.profile.type || 'N/A'}</td>
+                      <td className="px-4 py-2 cursor-pointer" onClick={()=>setSelectedUser(user)}>{user.profile?.firstName || user.name || ''} {user.profile?.lastName || ''}</td>
+                      <td className="px-4 py-2">{user.email || ''}</td>
+                      <td className="px-4 py-2">{user.profile?.type || 'N/A'}</td>
                       <td className="px-4 py-2">{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '-'}</td>
                       <td className="px-4 py-2">
                         <span className={`px-2 py-1 rounded text-xs font-semibold ${user.suspended ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>{user.suspended ? 'Suspended' : 'Active'}</span>
@@ -255,12 +255,12 @@ const AdminDashboard = () => {
                 <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-8 relative">
                   <button onClick={()=>setSelectedUser(null)} className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-2xl">&times;</button>
                   <h2 className="text-xl font-bold mb-4 text-indigo-700">User Profile</h2>
-                  <div className="mb-2"><b>Name:</b> {selectedUser.profile.firstName} {selectedUser.profile.lastName}</div>
-                  <div className="mb-2"><b>Email:</b> {selectedUser.email}</div>
-                  <div className="mb-2"><b>Type:</b> {selectedUser.profile.type || 'N/A'}</div>
+                  <div className="mb-2"><b>Name:</b> {selectedUser.profile?.firstName || selectedUser.name || ''} {selectedUser.profile?.lastName || ''}</div>
+                  <div className="mb-2"><b>Email:</b> {selectedUser.email || ''}</div>
+                  <div className="mb-2"><b>Type:</b> {selectedUser.profile?.type || 'N/A'}</div>
                   <div className="mb-2"><b>Registered:</b> {selectedUser.createdAt ? new Date(selectedUser.createdAt).toLocaleDateString() : '-'}</div>
                   <div className="mb-2"><b>Status:</b> {selectedUser.suspended ? 'Suspended' : 'Active'}</div>
-                  <div className="mb-2"><b>Contact:</b> {selectedUser.profile.phone || '-'} | {selectedUser.profile.university || '-'}</div>
+                  <div className="mb-2"><b>Contact:</b> {selectedUser.profile?.phone || '-'} | {selectedUser.profile?.university || '-'}</div>
                   <div className="mb-2"><b>Bookings:</b> {selectedUser.bookings?.length || 0}</div>
                   <div className="mb-2"><b>Notes:</b> {selectedUser.notes || '-'}</div>
                   <div className="flex gap-2 mt-6">
@@ -654,7 +654,7 @@ const AdminDashboard = () => {
                             <span className={`px-2 py-1 rounded text-xs font-semibold ${payment.status==='Completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>{payment.status}</span>
                           </td>
                           <td className="px-4 py-2">Booking ID: {payment.bookingId}</td>
-                        </tr>
+                      </tr>
                       ))}
                     </tbody>
                   </table>
@@ -692,7 +692,7 @@ const AdminDashboard = () => {
                       <td className="px-4 py-2">{log.action}</td>
                       <td className="px-4 py-2">{log.user}</td>
                       <td className="px-4 py-2">{log.details}</td>
-                    </tr>
+                  </tr>
                   ))}
                 </tbody>
               </table>
