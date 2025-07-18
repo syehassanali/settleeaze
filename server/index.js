@@ -15,6 +15,7 @@ import logRoutes from './routes/log.js';
 import notificationRoutes from './routes/notification.js';
 import cmsRoutes from './routes/cms.js';
 import statsRoutes from './routes/stats.js';
+import serviceRoutes from './routes/service.js';
 import './passport.js';
 import fs from 'fs';
 import serveStatic from 'serve-static';
@@ -66,6 +67,9 @@ app.use('/api/admin/logs', logRoutes);
 app.use('/api/admin/notifications', notificationRoutes);
 app.use('/api/admin/cms', cmsRoutes);
 app.use('/api/admin/stats', statsRoutes);
+app.use('/api/admin/users', userRoutes);
+app.use('/api/admin/bookings', bookingRoutes);
+app.use('/api/admin/services', serviceRoutes);
 
 // MongoDB connection
 const mongoURI = process.env.MONGO_URL || process.env.MONGO_URI || process.env.DATABASE_URL;
