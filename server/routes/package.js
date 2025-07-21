@@ -1,6 +1,7 @@
-const express = require('express');
+import express from 'express';
+import Package from '../models/Package.js';
+
 const router = express.Router();
-const Package = require('../models/Package');
 
 // GET /api/packages - List with filters, search, pagination
 router.get('/', async (req, res) => {
@@ -84,4 +85,4 @@ router.patch('/:id/most-popular', async (req, res) => {
   }
 });
 
-module.exports = router; 
+export default router; 
