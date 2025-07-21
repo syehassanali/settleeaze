@@ -163,9 +163,9 @@ const AdminDashboard = () => {
         statsRes,
       ]) => {
         setUsers(usersRes.data);
-        setServices(Array.isArray(servicesRes.data) ? servicesRes.data : []);
+        setServices(Array.isArray(servicesRes.data.services) ? servicesRes.data.services : []);
         setBookings(Array.isArray(bookingsRes.data) ? bookingsRes.data : bookingsRes.data.bookings || []);
-        setPackages(packagesRes.data);
+        setPackages(Array.isArray(packagesRes.data.packages) ? packagesRes.data.packages : []);
         setInquiries(inquiriesRes.data);
         setAdminUsers(adminUsersRes.data);
         setPayments(paymentsRes.data);
@@ -193,6 +193,38 @@ const AdminDashboard = () => {
     //   revenue: 12500
     // });
   }, []);
+
+  // Fetch services when services tab is selected
+  useEffect(() => {
+    if (tab === 'services') {
+      setLoading(true);
+      api.get('/admin/services')
+        .then(response => {
+          setServices(Array.isArray(response.data.services) ? response.data.services : []);
+        })
+        .catch(error => {
+          console.error('Error fetching services:', error);
+          setServices([]);
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [tab]);
+
+  // Fetch packages when packages tab is selected
+  useEffect(() => {
+    if (tab === 'packages') {
+      setLoading(true);
+      api.get('/admin/packages')
+        .then(response => {
+          setPackages(Array.isArray(response.data.packages) ? response.data.packages : []);
+        })
+        .catch(error => {
+          console.error('Error fetching packages:', error);
+          setPackages([]);
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [tab]);
 
   const handleTabChange = (event, newValue) => {
     setTab(newValue)
