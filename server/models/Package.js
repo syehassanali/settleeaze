@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const PackageSchema = new mongoose.Schema({
   title: { type: String, required: true },
@@ -13,4 +13,5 @@ const PackageSchema = new mongoose.Schema({
   mostPopular: { type: Boolean, default: false },
 }, { timestamps: true });
 
-module.exports = mongoose.model('Package', PackageSchema); 
+const Package = mongoose.model('Package', PackageSchema);
+export default Package; 

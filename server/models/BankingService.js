@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const BankingServiceSchema = new mongoose.Schema({
   title: { type: String, required: true },
@@ -12,4 +12,5 @@ const BankingServiceSchema = new mongoose.Schema({
   isDeleted: { type: Boolean, default: false },
 }, { timestamps: true });
 
-module.exports = mongoose.model('BankingService', BankingServiceSchema); 
+const BankingService = mongoose.model('BankingService', BankingServiceSchema);
+export default BankingService; 
