@@ -36,19 +36,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /api/services/public - Public-facing endpoint to get published services
-router.get('/public', async (req, res) => {
-  try {
-    const services = await Service.find({
-      isDeleted: false,
-      visibility: 'Published'
-    }).sort({ createdAt: -1 });
-    res.json({ services });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
 // POST /api/services - Create
 router.post('/', async (req, res) => {
   try {

@@ -56,6 +56,19 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Routes
+app.get('/api/services', async (req, res) => {
+  try {
+    const Service = mongoose.model('Service');
+    const services = await Service.find({
+      isDeleted: false,
+      visibility: 'Published'
+    }).sort({ createdAt: -1 });
+    res.json({ services });
+  } catch (err) {
+    console.error('Error fetching public services:', err);
+    res.status(500).json({ error: 'Failed to load services.' });
+  }
+});
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/booking', bookingRoutes);
