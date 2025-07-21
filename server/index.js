@@ -57,12 +57,14 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Routes
-app.use('/api/public', publicRoutes); // Use the new public routes
+// --- API Routes Registration ---
+// All API routes should be registered here, before the static file serving.
+app.use('/api/public', publicRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/booking', bookingRoutes);
-// Register admin routes
+
+// Admin-specific routes
 app.use('/api/admin/packages', packageRoutes);
 app.use('/api/admin/inquiries', inquiryRoutes);
 app.use('/api/admin/admin-users', adminUserRoutes);
@@ -76,7 +78,26 @@ app.use('/api/admin/bookings', bookingRoutes);
 app.use('/api/admin/services', serviceRoutes);
 app.use('/api/admin/banking', bankingRoutes);
 
-// MongoDB connection
+
+// --- Static File Serving & Catch-all for React Frontend ---
+// Serve uploaded images first
+const uploadsPath = path.resolve(__dirname, 'uploads');
+if (fs.existsSync(uploadsPath)) {
+  app.use('/uploads', serveStatic(uploadsPath));
+}
+
+// Then, serve static files from the Vite build directory
+const clientDistPath = path.resolve(__dirname, 'client-dist');
+if (fs.existsSync(clientDistPath)) {
+  app.use(serveStatic(clientDistPath));
+  // The catch-all handler must be defined AFTER all API routes.
+  // It sends the main index.html for any non-API request.
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(clientDistPath, 'index.html'));
+  });
+}
+
+// --- MongoDB Connection and Server Startup ---
 const mongoURI = process.env.MONGO_URL || process.env.MONGO_URI || process.env.DATABASE_URL;
 
 console.log("🔍 Attempting to connect to MongoDB...");
@@ -102,17 +123,3 @@ mongoose.connect(mongoURI, {
   console.error('❌ MongoDB connection error:', err);
   console.error('❌ MongoDB URI was:', mongoURI ? 'Set' : 'Not set');
 });
-
-// Serve static files from Vite build
-const clientDistPath = path.resolve(__dirname, 'client-dist');
-if (fs.existsSync(clientDistPath)) {
-  app.use(serveStatic(clientDistPath));
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(clientDistPath, 'index.html'));
-  });
-}
-// Serve uploaded images
-const uploadsPath = path.resolve(__dirname, 'uploads');
-if (fs.existsSync(uploadsPath)) {
-  app.use('/uploads', serveStatic(uploadsPath));
-}
