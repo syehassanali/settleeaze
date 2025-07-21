@@ -1,6 +1,7 @@
-const express = require('express');
+import express from 'express';
+import BankingService from '../models/BankingService.js';
+
 const router = express.Router();
-const BankingService = require('../models/BankingService');
 
 // GET /api/banking - List with filters, search, pagination
 router.get('/', async (req, res) => {
@@ -73,4 +74,4 @@ router.patch('/:id/visibility', async (req, res) => {
   }
 });
 
-module.exports = router; 
+export default router; 
