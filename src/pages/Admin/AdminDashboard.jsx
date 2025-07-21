@@ -163,7 +163,7 @@ const AdminDashboard = () => {
         statsRes,
       ]) => {
         setUsers(usersRes.data);
-        setServices(servicesRes.data);
+        setServices(Array.isArray(servicesRes.data) ? servicesRes.data : []);
         setBookings(Array.isArray(bookingsRes.data) ? bookingsRes.data : bookingsRes.data.bookings || []);
         setPackages(packagesRes.data);
         setInquiries(inquiriesRes.data);
@@ -356,8 +356,10 @@ const AdminDashboard = () => {
               <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition" onClick={()=>openServiceModal(null)}><FaPlus />Add New Service</button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-              {services.length === 0 ? (
+              {Array.isArray(services) && services.length === 0 ? (
                 <div className="col-span-full text-center text-gray-500 py-8">No services found. Click "Add New Service" to create one.</div>
+              ) : !Array.isArray(services) ? (
+                <div className="col-span-full text-center text-red-500 py-8">Error: Services data is not an array.</div>
               ) : (
                 services.map(service => (
                   <div key={service._id} className="bg-white rounded-xl shadow p-6 flex flex-col items-center text-center">
@@ -462,6 +464,8 @@ const AdminDashboard = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
               {Array.isArray(packages) && packages.length === 0 ? (
                 <div className="col-span-full text-center text-gray-500 py-8">No packages found. Click "Add New Package" to create one.</div>
+              ) : !Array.isArray(packages) ? (
+                <div className="col-span-full text-center text-red-500 py-8">Error: Packages data is not an array.</div>
               ) : (
                 Array.isArray(packages) && packages.map(pkg => (
                   <div key={pkg._id} className="bg-white rounded-xl shadow p-6 flex flex-col items-center text-center">
