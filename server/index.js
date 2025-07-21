@@ -16,6 +16,7 @@ import notificationRoutes from './routes/notification.js';
 import cmsRoutes from './routes/cms.js';
 import statsRoutes from './routes/stats.js';
 import serviceRoutes from './routes/service.js';
+import bankingRoutes from './routes/banking.js';
 import './passport.js';
 import fs from 'fs';
 import serveStatic from 'serve-static';
@@ -70,6 +71,7 @@ app.use('/api/admin/stats', statsRoutes);
 app.use('/api/admin/users', userRoutes);
 app.use('/api/admin/bookings', bookingRoutes);
 app.use('/api/admin/services', serviceRoutes);
+app.use('/api/admin/banking', bankingRoutes);
 
 // MongoDB connection
 const mongoURI = process.env.MONGO_URL || process.env.MONGO_URI || process.env.DATABASE_URL;
@@ -105,4 +107,9 @@ if (fs.existsSync(clientDistPath)) {
   app.get('*', (req, res) => {
     res.sendFile(path.join(clientDistPath, 'index.html'));
   });
+}
+// Serve uploaded images
+const uploadsPath = path.resolve(__dirname, 'uploads');
+if (fs.existsSync(uploadsPath)) {
+  app.use('/uploads', serveStatic(uploadsPath));
 }

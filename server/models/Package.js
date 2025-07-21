@@ -1,14 +1,16 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
-const packageSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  price: { type: Number, required: true },
-  services: [{ type: String, required: true }],
-  mostPopular: { type: Boolean, default: false },
-  sort: { type: Number, default: 0 },
-  image: { type: String },
+const PackageSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  price: { type: String },
+  tagline: { type: String },
+  features: { type: [String], default: [] },
   description: { type: String },
-  createdAt: { type: Date, default: Date.now }
-});
+  type: { type: String, enum: ['Standard', 'Custom'], default: 'Standard' },
+  visibility: { type: Boolean, default: true },
+  priority: { type: Number, default: 0 },
+  isDeleted: { type: Boolean, default: false },
+  mostPopular: { type: Boolean, default: false },
+}, { timestamps: true });
 
-export default mongoose.model('Package', packageSchema); 
+module.exports = mongoose.model('Package', PackageSchema); 

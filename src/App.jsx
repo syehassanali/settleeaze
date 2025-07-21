@@ -18,6 +18,9 @@ import BlogPage from './pages/Blog/BlogPage'
 import BlogPostPage from './pages/Blog/BlogPostPage'
 import ContactPage from './pages/Contact/ContactPage'
 import ScrollToTop from './components/common/ScrollToTop';
+import ServicesAdminPage from './pages/Admin/ServicesAdminPage';
+import PackagesAdminPage from './pages/Admin/PackagesAdminPage';
+import BankingAdminPage from './pages/Admin/BankingAdminPage';
 
 
 // Add temporary fallback components
@@ -29,6 +32,9 @@ function App() {
     <>
       <ScrollToTop />
       <Routes>
+        <Route path="/admin/services" element={<ServicesAdminPage />} />
+        <Route path="/admin/packages" element={<PackagesAdminPage />} />
+        <Route path="/admin/banking" element={<BankingAdminPage />} />
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
           <Route path="services" element={<ServicesPage />} />

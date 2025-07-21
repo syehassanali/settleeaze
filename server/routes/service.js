@@ -1,60 +1,100 @@
-import express from 'express';
-import Service from '../models/Service.js';
-
+const express = require('express');
 const router = express.Router();
+const Service = require('../models/Service');
+const multer = require('multer');
+const path = require('path');
 
-// GET all services
+// Multer setup for local uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, '../../uploads'));
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + '-' + file.originalname);
+  }
+});
+const upload = multer({ storage });
+
+// GET /api/services - List with filters, search, pagination
 router.get('/', async (req, res) => {
   try {
-    const services = await Service.find().sort({ createdAt: -1 });
-    res.json(services);
+    const { search, category, visibility, page = 1, limit = 10 } = req.query;
+    const query = { isDeleted: false };
+    if (search) query.title = { $regex: search, $options: 'i' };
+    if (category) query.category = category;
+    if (visibility) query.visibility = visibility;
+    const services = await Service.find(query)
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(Number(limit));
+    const total = await Service.countDocuments(query);
+    res.json({ services, total });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
-// GET one service
-router.get('/:id', async (req, res) => {
-  try {
-    const service = await Service.findById(req.params.id);
-    if (!service) return res.status(404).json({ message: 'Not found' });
-    res.json(service);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// CREATE service
+// POST /api/services - Create
 router.post('/', async (req, res) => {
   try {
     const service = new Service(req.body);
     await service.save();
     res.status(201).json(service);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(400).json({ error: err.message });
   }
 });
 
-// UPDATE service
+// PUT /api/services/:id - Update
 router.put('/:id', async (req, res) => {
   try {
     const service = await Service.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!service) return res.status(404).json({ message: 'Not found' });
     res.json(service);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(400).json({ error: err.message });
   }
 });
 
-// DELETE service
+// DELETE /api/services/:id - Soft delete
 router.delete('/:id', async (req, res) => {
   try {
-    const service = await Service.findByIdAndDelete(req.params.id);
-    if (!service) return res.status(404).json({ message: 'Not found' });
-    res.json({ message: 'Deleted' });
+    const service = await Service.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
+    res.json({ success: true });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(400).json({ error: err.message });
   }
 });
 
-export default router; 
+// POST /api/services/:id/restore - Restore soft-deleted service
+router.post('/:id/restore', async (req, res) => {
+  try {
+    const service = await Service.findByIdAndUpdate(req.params.id, { isDeleted: false }, { new: true });
+    res.json(service);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// PATCH /api/services/:id/visibility - Toggle visibility
+router.patch('/:id/visibility', async (req, res) => {
+  try {
+    const { visibility } = req.body;
+    const service = await Service.findByIdAndUpdate(req.params.id, { visibility }, { new: true });
+    res.json(service);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// POST /api/admin/services/upload - Image upload
+router.post('/upload', upload.single('image'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
+  // Return the file URL (assuming static serving from /uploads)
+  const fileUrl = `/uploads/${req.file.filename}`;
+  res.json({ url: fileUrl });
+});
+
+module.exports = router; 

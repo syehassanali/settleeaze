@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { FaUsers, FaUserCheck, FaBoxOpen, FaClipboardList, FaEnvelopeOpenText, FaDollarSign, FaChartLine, FaChartPie, FaMapMarkerAlt, FaEdit, FaTrash, FaBan, FaRedo, FaFileCsv, FaPlus, FaStar, FaFileAlt, FaPaperclip, FaCheckCircle, FaUserTie, FaImage, FaUserShield, FaBell } from 'react-icons/fa';
 import api from '../../services/api';
+import { useRef } from 'react';
 
 const summaryTiles = [
   { label: 'Total Registered Users', icon: <FaUsers className="text-2xl text-indigo-600" />, key: 'totalUsers' },
@@ -42,12 +44,15 @@ const AdminDashboard = () => {
   const [error, setError] = useState(null);
 
   // Service modal form state
-  const [serviceForm, setServiceForm] = useState({ title: '', category: '', price: '', image: '', description: '' });
+  const [serviceForm, setServiceForm] = useState({ title: '', category: '', price: '', image: '', description: '', details: '', features: [], visibility: 'Published' });
+  const fileInputRef = useRef();
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadError, setUploadError] = useState('');
 
   // Open modal for add/edit
   const openServiceModal = (service = null) => {
     setEditingService(service);
-    setServiceForm(service ? { ...service } : { title: '', category: '', price: '', image: '', description: '' });
+    setServiceForm(service ? { ...service, features: service.features || [] } : { title: '', category: '', price: '', image: '', description: '', details: '', features: [], visibility: 'Published' });
     setServiceModalOpen(true);
   };
 
@@ -71,8 +76,10 @@ const AdminDashboard = () => {
         setServices([res.data, ...services]);
       }
       setServiceModalOpen(false);
+      alert('Service saved successfully!');
     } catch (err) {
       alert('Failed to save service.');
+      console.error('Service save error:', err);
     }
   };
 
@@ -85,6 +92,25 @@ const AdminDashboard = () => {
       } catch (error) {
         alert('Error deleting service.');
       }
+    }
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploadingImage(true);
+    setUploadError('');
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+      const res = await api.post('/admin/services/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      setServiceForm(f => ({ ...f, imageUrl: res.data.url }));
+    } catch (err) {
+      setUploadError('Failed to upload image');
+    } finally {
+      setUploadingImage(false);
     }
   };
 
@@ -188,10 +214,11 @@ const AdminDashboard = () => {
           <button className={`w-full text-left px-4 py-2 rounded-lg font-medium transition ${tab==='overview'?'bg-indigo-600':''}`} onClick={()=>setTab('overview')}>Overview</button>
           <button className={`w-full text-left px-4 py-2 rounded-lg font-medium transition ${tab==='users'?'bg-indigo-600':''}`} onClick={()=>setTab('users')}>Users</button>
           <button className={`w-full text-left px-4 py-2 rounded-lg font-medium transition ${tab==='services'?'bg-indigo-600':''}`} onClick={()=>setTab('services')}>Services</button>
+          <button className={`w-full text-left px-4 py-2 rounded-lg font-medium transition ${tab==='packages'?'bg-indigo-600':''}`} onClick={()=>setTab('packages')}>Packages</button>
+          <button className={`w-full text-left px-4 py-2 rounded-lg font-medium transition ${tab==='banking'?'bg-indigo-600':''}`} onClick={()=>setTab('banking')}>Banking</button>
           <button className={`w-full text-left px-4 py-2 rounded-lg font-medium transition ${tab==='bookings'?'bg-indigo-600':''}`} onClick={()=>setTab('bookings')}>Bookings</button>
           <button className={`w-full text-left px-4 py-2 rounded-lg font-medium transition ${tab==='inquiries'?'bg-indigo-600':''}`} onClick={()=>setTab('inquiries')}>Inquiries</button>
           <button className={`w-full text-left px-4 py-2 rounded-lg font-medium transition ${tab==='cms'?'bg-indigo-600':''}`} onClick={()=>setTab('cms')}>Content</button>
-          <button className={`w-full text-left px-4 py-2 rounded-lg font-medium transition ${tab==='bank'?'bg-indigo-600':''}`} onClick={()=>setTab('bank')}>Bank</button>
           <button className={`w-full text-left px-4 py-2 rounded-lg font-medium transition ${tab==='payments'?'bg-indigo-600':''}`} onClick={()=>setTab('payments')}>Payments</button>
           <button className={`w-full text-left px-4 py-2 rounded-lg font-medium transition ${tab==='logs'?'bg-indigo-600':''}`} onClick={()=>setTab('logs')}>Logs</button>
         </nav>
@@ -321,7 +348,7 @@ const AdminDashboard = () => {
             )}
           </div>
         )}
-        {/* Service & Package Management Tab */}
+        {/* Services Tab */}
         {tab==='services' && (
           <div>
             <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
@@ -334,12 +361,12 @@ const AdminDashboard = () => {
               ) : (
                 services.map(service => (
                   <div key={service._id} className="bg-white rounded-xl shadow p-6 flex flex-col items-center text-center">
-                    <img src={service.image || '/dummy/airport.jpg'} alt={service.title} className="w-full h-32 object-cover rounded mb-4" />
+                    <img src={service.imageUrl || '/dummy/airport.jpg'} alt={service.title} className="w-full h-32 object-cover rounded mb-4" />
                     <h3 className="text-lg font-bold mb-1 text-indigo-700">{service.title}</h3>
                     <div className="text-sm text-gray-500 mb-2">{service.category}</div>
                     <div className="text-green-600 font-semibold mb-2">${service.price}</div>
                     <div className="flex gap-2 mt-2">
-                      <button className="text-blue-600 hover:text-blue-800" title="Edit" onClick={()=>openServiceModal(service)}><FaEdit /></button>
+                      <button className="text-blue-600 hover:text-blue-800" title="Manage Details" onClick={()=>openServiceModal(service)}><FaEdit /> Manage</button>
                       <button className="text-red-600 hover:text-red-800" title="Delete" onClick={()=>handleDeleteService(service._id)}><FaTrash /></button>
                     </div>
                   </div>
@@ -354,23 +381,66 @@ const AdminDashboard = () => {
                   <form className="space-y-4" onSubmit={handleServiceSave}>
                     <div>
                       <label className="block text-sm font-medium mb-1 text-gray-700">Title</label>
-                      <input type="text" name="title" className="w-full border border-gray-300 rounded-lg px-4 py-2" value={serviceForm.title} onChange={handleServiceInput} required />
+                      <input type="text" name="title" className="w-full border border-gray-300 rounded-lg px-4 py-2" value={serviceForm.title || ''} onChange={handleServiceInput} required />
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1 text-gray-700">Category</label>
-                      <input type="text" name="category" className="w-full border border-gray-300 rounded-lg px-4 py-2" value={serviceForm.category} onChange={handleServiceInput} />
+                      <input type="text" name="category" className="w-full border border-gray-300 rounded-lg px-4 py-2" value={serviceForm.category || ''} onChange={handleServiceInput} />
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1 text-gray-700">Price</label>
-                      <input type="number" name="price" className="w-full border border-gray-300 rounded-lg px-4 py-2" value={serviceForm.price} onChange={handleServiceInput} required />
+                      <input type="text" name="price" className="w-full border border-gray-300 rounded-lg px-4 py-2" value={serviceForm.price || ''} onChange={handleServiceInput} />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-1 text-gray-700">Image URL</label>
-                      <input type="text" name="image" className="w-full border border-gray-300 rounded-lg px-4 py-2" value={serviceForm.image} onChange={handleServiceInput} />
+                      <label className="block text-sm font-medium mb-1 text-gray-700">Image</label>
+                      <div className="flex gap-2 items-center">
+                        <input
+                          type="text"
+                          name="imageUrl"
+                          className="w-full border border-gray-300 rounded-lg px-4 py-2"
+                          value={serviceForm.imageUrl || ''}
+                          onChange={handleServiceInput}
+                          placeholder="Paste image URL or upload below"
+                        />
+                        <button
+                          type="button"
+                          className="px-3 py-2 bg-indigo-100 text-indigo-700 rounded hover:bg-indigo-200 transition font-semibold"
+                          onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                          disabled={uploadingImage}
+                        >
+                          {uploadingImage ? 'Uploading...' : 'Upload Image'}
+                        </button>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          ref={fileInputRef}
+                          style={{ display: 'none' }}
+                          onChange={handleImageUpload}
+                        />
+                      </div>
+                      {uploadError && <div className="text-red-600 text-sm mt-1">{uploadError}</div>}
+                      {serviceForm.imageUrl && (
+                        <img src={serviceForm.imageUrl} alt="preview" className="w-full h-32 object-cover rounded mt-2" />
+                      )}
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-1 text-gray-700">Description</label>
-                      <textarea name="description" className="w-full border border-gray-300 rounded-lg px-4 py-2" rows={3} value={serviceForm.description} onChange={handleServiceInput}></textarea>
+                      <label className="block text-sm font-medium mb-1 text-gray-700">Short Description</label>
+                      <input type="text" name="description" className="w-full border border-gray-300 rounded-lg px-4 py-2" value={serviceForm.description || ''} onChange={handleServiceInput} />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1 text-gray-700">Details</label>
+                      <textarea name="details" className="w-full border border-gray-300 rounded-lg px-4 py-2" rows={4} value={serviceForm.details || ''} onChange={handleServiceInput}></textarea>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1 text-gray-700">Features (comma separated)</label>
+                      <input type="text" name="features" className="w-full border border-gray-300 rounded-lg px-4 py-2" value={Array.isArray(serviceForm.features) ? serviceForm.features.join(', ') : (serviceForm.features || '')} onChange={e => setServiceForm(f => ({ ...f, features: e.target.value.split(',').map(s => s.trim()).filter(Boolean) }))} />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1 text-gray-700">Visibility</label>
+                      <select name="visibility" className="w-full border border-gray-300 rounded-lg px-4 py-2" value={serviceForm.visibility || 'Published'} onChange={handleServiceInput}>
+                        <option value="Published">Published</option>
+                        <option value="Hidden">Hidden</option>
+                      </select>
                     </div>
                     <div className="flex gap-2 mt-6">
                       <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition">Save</button>
@@ -380,6 +450,99 @@ const AdminDashboard = () => {
                 </div>
               </div>
             )}
+          </div>
+        )}
+        {/* Packages Tab */}
+        {tab==='packages' && (
+          <div>
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+              <h2 className="text-2xl font-bold text-neutral-dark">Package Management</h2>
+              <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition" onClick={()=>{/* open package modal for add */}}><FaPlus />Add New Package</button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+              {packages.length === 0 ? (
+                <div className="col-span-full text-center text-gray-500 py-8">No packages found. Click "Add New Package" to create one.</div>
+              ) : (
+                packages.map(pkg => (
+                  <div key={pkg._id} className="bg-white rounded-xl shadow p-6 flex flex-col items-center text-center">
+                    <img src={pkg.image || '/dummy/airport.jpg'} alt={pkg.name} className="w-full h-32 object-cover rounded mb-4" />
+                    <h3 className="text-lg font-bold mb-1 text-indigo-700">{pkg.name}</h3>
+                    <div className="text-sm text-gray-500 mb-2">{pkg.description}</div>
+                    <div className="text-green-600 font-semibold mb-2">${pkg.price}</div>
+                    <div className="flex gap-2 mt-2">
+                      <button className="text-blue-600 hover:text-blue-800" title="Edit" onClick={()=>{/* open package modal for edit */}}><FaEdit /></button>
+                      <button className="text-red-600 hover:text-red-800" title="Delete" onClick={()=>{/* handle delete package */}}><FaTrash /></button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+            {/* Package Modal */}
+            {packageModalOpen && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+                <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-8 relative">
+                  <button onClick={()=>setPackageModalOpen(false)} className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-2xl">&times;</button>
+                  <h2 className="text-xl font-bold mb-4 text-indigo-700">Package Details</h2>
+                  <form className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-1 text-gray-700">Name</label>
+                      <input type="text" className="w-full border border-gray-300 rounded-lg px-4 py-2" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1 text-gray-700">Description</label>
+                      <textarea className="w-full border border-gray-300 rounded-lg px-4 py-2" rows={3}></textarea>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1 text-gray-700">Price</label>
+                      <input type="number" className="w-full border border-gray-300 rounded-lg px-4 py-2" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1 text-gray-700">Image URL</label>
+                      <input type="text" className="w-full border border-gray-300 rounded-lg px-4 py-2" />
+                    </div>
+                    <div className="flex gap-2 mt-6">
+                      <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition">Save</button>
+                      <button type="button" className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition" onClick={()=>setPackageModalOpen(false)}>Cancel</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+        {/* Banking Tab */}
+        {tab==='banking' && (
+          <div>
+            <h2 className="text-2xl font-bold text-neutral-dark mb-6">Bank Management</h2>
+            <form className="grid grid-cols-1 md:grid-cols-2 gap-6" onSubmit={async e => {
+              e.preventDefault();
+              try {
+                await api.put(`/admin/cms/${cmsEdit._id}`, { ...cmsEdit });
+                setCms(cmsEdit);
+                alert('Bank info updated!');
+              } catch (err) {
+                alert('Failed to update bank info.');
+              }
+            }}>
+              <div className="bg-white rounded-xl shadow p-6 flex flex-col gap-4">
+                <h3 className="text-lg font-bold mb-2 text-indigo-700">Bank Details</h3>
+                <input type="text" className="border rounded px-3 py-2" placeholder="Current Bank" value={cmsEdit.bankName || ''} onChange={e=>setCmsEdit({...cmsEdit, bankName: e.target.value})} />
+                <input type="text" className="border rounded px-3 py-2" placeholder="Account Number" value={cmsEdit.accountNumber || ''} onChange={e=>setCmsEdit({...cmsEdit, accountNumber: e.target.value})} />
+                <input type="text" className="border rounded px-3 py-2" placeholder="Routing Number" value={cmsEdit.routingNumber || ''} onChange={e=>setCmsEdit({...cmsEdit, routingNumber: e.target.value})} />
+                <input type="text" className="border rounded px-3 py-2" placeholder="SWIFT Code" value={cmsEdit.swiftCode || ''} onChange={e=>setCmsEdit({...cmsEdit, swiftCode: e.target.value})} />
+                <input type="text" className="border rounded px-3 py-2" placeholder="IBAN" value={cmsEdit.iban || ''} onChange={e=>setCmsEdit({...cmsEdit, iban: e.target.value})} />
+                <input type="text" className="border rounded px-3 py-2" placeholder="Account Holder" value={cmsEdit.accountHolder || ''} onChange={e=>setCmsEdit({...cmsEdit, accountHolder: e.target.value})} />
+                <input type="text" className="border rounded px-3 py-2" placeholder="Branch" value={cmsEdit.branch || ''} onChange={e=>setCmsEdit({...cmsEdit, branch: e.target.value})} />
+                <input type="text" className="border rounded px-3 py-2" placeholder="Bank Address" value={cmsEdit.bankAddress || ''} onChange={e=>setCmsEdit({...cmsEdit, bankAddress: e.target.value})} />
+                <input type="text" className="border rounded px-3 py-2" placeholder="Bank Phone" value={cmsEdit.bankPhone || ''} onChange={e=>setCmsEdit({...cmsEdit, bankPhone: e.target.value})} />
+                <input type="text" className="border rounded px-3 py-2" placeholder="Bank Email" value={cmsEdit.bankEmail || ''} onChange={e=>setCmsEdit({...cmsEdit, bankEmail: e.target.value})} />
+              </div>
+              <div className="bg-white rounded-xl shadow p-6 flex flex-col gap-4">
+                <h3 className="text-lg font-bold mb-2 text-indigo-700">Bank Transfer Instructions</h3>
+                <textarea className="border rounded px-3 py-2" rows={6} placeholder="Bank Transfer Instructions" value={cmsEdit.bankInstructions || ''} onChange={e=>setCmsEdit({...cmsEdit, bankInstructions: e.target.value})}></textarea>
+                <button type="submit" className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition">Save</button>
+              </div>
+            </form>
           </div>
         )}
         {/* Bookings Management Tab */}
@@ -581,41 +744,6 @@ const AdminDashboard = () => {
               <div className="flex gap-2 mt-6">
                 <button type="button" className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition" onClick={()=>setCms(cmsEdit)}>Save</button>
                 <button type="button" className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition" onClick={()=>setCmsEdit(cms)}>Cancel</button>
-              </div>
-            </form>
-          </div>
-        )}
-        {/* Bank Tab */}
-        {tab==='bank' && (
-          <div>
-            <h2 className="text-2xl font-bold text-neutral-dark mb-6">Bank Management</h2>
-            <form className="grid grid-cols-1 md:grid-cols-2 gap-6" onSubmit={async e => {
-              e.preventDefault();
-              try {
-                await api.put(`/admin/cms/${cmsEdit._id}`, { ...cmsEdit });
-                setCms(cmsEdit);
-                alert('Bank info updated!');
-              } catch (err) {
-                alert('Failed to update bank info.');
-              }
-            }}>
-              <div className="bg-white rounded-xl shadow p-6 flex flex-col gap-4">
-                <h3 className="text-lg font-bold mb-2 text-indigo-700">Bank Details</h3>
-                <input type="text" className="border rounded px-3 py-2" placeholder="Current Bank" value={cmsEdit.bankName || ''} onChange={e=>setCmsEdit({...cmsEdit, bankName: e.target.value})} />
-                <input type="text" className="border rounded px-3 py-2" placeholder="Account Number" value={cmsEdit.accountNumber || ''} onChange={e=>setCmsEdit({...cmsEdit, accountNumber: e.target.value})} />
-                <input type="text" className="border rounded px-3 py-2" placeholder="Routing Number" value={cmsEdit.routingNumber || ''} onChange={e=>setCmsEdit({...cmsEdit, routingNumber: e.target.value})} />
-                <input type="text" className="border rounded px-3 py-2" placeholder="SWIFT Code" value={cmsEdit.swiftCode || ''} onChange={e=>setCmsEdit({...cmsEdit, swiftCode: e.target.value})} />
-                <input type="text" className="border rounded px-3 py-2" placeholder="IBAN" value={cmsEdit.iban || ''} onChange={e=>setCmsEdit({...cmsEdit, iban: e.target.value})} />
-                <input type="text" className="border rounded px-3 py-2" placeholder="Account Holder" value={cmsEdit.accountHolder || ''} onChange={e=>setCmsEdit({...cmsEdit, accountHolder: e.target.value})} />
-                <input type="text" className="border rounded px-3 py-2" placeholder="Branch" value={cmsEdit.branch || ''} onChange={e=>setCmsEdit({...cmsEdit, branch: e.target.value})} />
-                <input type="text" className="border rounded px-3 py-2" placeholder="Bank Address" value={cmsEdit.bankAddress || ''} onChange={e=>setCmsEdit({...cmsEdit, bankAddress: e.target.value})} />
-                <input type="text" className="border rounded px-3 py-2" placeholder="Bank Phone" value={cmsEdit.bankPhone || ''} onChange={e=>setCmsEdit({...cmsEdit, bankPhone: e.target.value})} />
-                <input type="text" className="border rounded px-3 py-2" placeholder="Bank Email" value={cmsEdit.bankEmail || ''} onChange={e=>setCmsEdit({...cmsEdit, bankEmail: e.target.value})} />
-              </div>
-              <div className="bg-white rounded-xl shadow p-6 flex flex-col gap-4">
-                <h3 className="text-lg font-bold mb-2 text-indigo-700">Bank Transfer Instructions</h3>
-                <textarea className="border rounded px-3 py-2" rows={6} placeholder="Bank Transfer Instructions" value={cmsEdit.bankInstructions || ''} onChange={e=>setCmsEdit({...cmsEdit, bankInstructions: e.target.value})}></textarea>
-                <button type="submit" className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition">Save</button>
               </div>
             </form>
           </div>

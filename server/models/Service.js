@@ -1,12 +1,16 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
-const serviceSchema = new mongoose.Schema({
+const ServiceSchema = new mongoose.Schema({
   title: { type: String, required: true },
+  description: { type: String, required: true },
+  details: { type: String },
+  price: { type: String }, // Can be string for 'Free' or price value
+  imageUrl: { type: String },
   category: { type: String },
-  price: { type: Number, required: true },
-  image: { type: String },
-  description: { type: String },
-  createdAt: { type: Date, default: Date.now }
+  visibility: { type: String, enum: ['Published', 'Hidden'], default: 'Published' },
+  isDeleted: { type: Boolean, default: false },
+}, {
+  timestamps: true
 });
 
-export default mongoose.model('Service', serviceSchema); 
+module.exports = mongoose.model('Service', ServiceSchema); 

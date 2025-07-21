@@ -1,60 +1,87 @@
-import express from 'express';
-import Package from '../models/Package.js';
-
+const express = require('express');
 const router = express.Router();
+const Package = require('../models/Package');
 
-// GET all packages
+// GET /api/packages - List with filters, search, pagination
 router.get('/', async (req, res) => {
   try {
-    const packages = await Package.find().sort({ sort: 1 });
-    res.json(packages);
+    const { search, type, visibility, page = 1, limit = 20 } = req.query;
+    const query = { isDeleted: false };
+    if (search) query.title = { $regex: search, $options: 'i' };
+    if (type) query.type = type;
+    if (visibility !== undefined) query.visibility = visibility === 'true';
+    const packages = await Package.find(query)
+      .sort({ priority: -1, createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(Number(limit));
+    const total = await Package.countDocuments(query);
+    res.json({ packages, total });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
-// GET one package
-router.get('/:id', async (req, res) => {
-  try {
-    const pkg = await Package.findById(req.params.id);
-    if (!pkg) return res.status(404).json({ message: 'Not found' });
-    res.json(pkg);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// CREATE package
+// POST /api/packages - Create
 router.post('/', async (req, res) => {
   try {
     const pkg = new Package(req.body);
     await pkg.save();
     res.status(201).json(pkg);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(400).json({ error: err.message });
   }
 });
 
-// UPDATE package
+// PUT /api/packages/:id - Update
 router.put('/:id', async (req, res) => {
   try {
     const pkg = await Package.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!pkg) return res.status(404).json({ message: 'Not found' });
     res.json(pkg);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(400).json({ error: err.message });
   }
 });
 
-// DELETE package
+// DELETE /api/packages/:id - Soft delete
 router.delete('/:id', async (req, res) => {
   try {
-    const pkg = await Package.findByIdAndDelete(req.params.id);
-    if (!pkg) return res.status(404).json({ message: 'Not found' });
-    res.json({ message: 'Deleted' });
+    await Package.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
+    res.json({ success: true });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(400).json({ error: err.message });
   }
 });
 
-export default router; 
+// POST /api/packages/:id/restore - Restore soft-deleted package
+router.post('/:id/restore', async (req, res) => {
+  try {
+    const pkg = await Package.findByIdAndUpdate(req.params.id, { isDeleted: false }, { new: true });
+    res.json(pkg);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// PATCH /api/packages/:id/visibility - Toggle visibility
+router.patch('/:id/visibility', async (req, res) => {
+  try {
+    const { visibility } = req.body;
+    const pkg = await Package.findByIdAndUpdate(req.params.id, { visibility }, { new: true });
+    res.json(pkg);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// PATCH /api/packages/:id/most-popular - Set/unset most popular
+router.patch('/:id/most-popular', async (req, res) => {
+  try {
+    const { mostPopular } = req.body;
+    const pkg = await Package.findByIdAndUpdate(req.params.id, { mostPopular }, { new: true });
+    res.json(pkg);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+module.exports = router; 
