@@ -17,7 +17,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// GET /api/services - List with filters, search, pagination
+// GET /api/services - List with filters, search, pagination for ADMIN
 router.get('/', async (req, res) => {
   try {
     const { search, category, visibility, page = 1, limit = 10 } = req.query;
@@ -31,6 +31,19 @@ router.get('/', async (req, res) => {
       .limit(Number(limit));
     const total = await Service.countDocuments(query);
     res.json({ services, total });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/services/public - Public-facing endpoint to get published services
+router.get('/public', async (req, res) => {
+  try {
+    const services = await Service.find({
+      isDeleted: false,
+      visibility: 'Published'
+    }).sort({ createdAt: -1 });
+    res.json({ services });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

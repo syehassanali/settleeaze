@@ -132,66 +132,27 @@ const AdminDashboard = () => {
     }
   };
 
-  // Fetch all dashboard data
+  // Fetch all dashboard data on initial load
   useEffect(() => {
     setLoading(true);
     setError(null);
     Promise.all([
-          api.get('/admin/users'),
-          api.get('/admin/services'),
-          api.get('/admin/bookings'),
-      api.get('/admin/packages'), // <-- You must implement this endpoint in your backend
-      api.get('/admin/inquiries'), // <-- You must implement this endpoint in your backend
-      api.get('/admin/admin-users'), // <-- You must implement this endpoint in your backend
-      api.get('/admin/payments'), // <-- You must implement this endpoint in your backend
-      api.get('/admin/logs'), // <-- You must implement this endpoint in your backend
-      api.get('/admin/notifications'), // <-- You must implement this endpoint in your backend
-      api.get('/admin/cms'), // <-- You must implement this endpoint in your backend
-      api.get('/admin/stats'), // <-- You must implement this endpoint in your backend
+      api.get('/admin/stats'),
+      api.get('/admin/users'),
+      api.get('/admin/bookings'),
+      api.get('/admin/inquiries'),
     ])
-      .then(([
-        usersRes,
-        servicesRes,
-        bookingsRes,
-        packagesRes,
-        inquiriesRes,
-        adminUsersRes,
-        paymentsRes,
-        logsRes,
-        notificationsRes,
-        cmsRes,
-        statsRes,
-      ]) => {
-        setUsers(usersRes.data);
-        setServices(Array.isArray(servicesRes.data.services) ? servicesRes.data.services : []);
-        setBookings(Array.isArray(bookingsRes.data) ? bookingsRes.data : bookingsRes.data.bookings || []);
-        setPackages(Array.isArray(packagesRes.data.packages) ? packagesRes.data.packages : []);
-        setInquiries(inquiriesRes.data);
-        setAdminUsers(adminUsersRes.data);
-        setPayments(paymentsRes.data);
-        setLogs(logsRes.data);
-        setNotifications(notificationsRes.data);
-        setCms(cmsRes.data);
-        setCmsEdit(cmsRes.data);
+      .then(([statsRes, usersRes, bookingsRes, inquiriesRes]) => {
         setStats(statsRes.data);
+        setUsers(usersRes.data);
+        setBookings(Array.isArray(bookingsRes.data.bookings) ? bookingsRes.data.bookings : []);
+        setInquiries(inquiriesRes.data);
       })
       .catch((err) => {
-        setError('Failed to load dashboard data.');
+        setError('Failed to load initial dashboard data.');
         console.error('Error fetching admin data:', err);
       })
       .finally(() => setLoading(false));
-  }, []);
-
-  useEffect(() => {
-    // Fetch stats for summary tiles (replace with real API calls)
-    // setStats({
-    //   totalUsers: 1200,
-    //   activeUsers: 340,
-    //   customPackages: 27,
-    //   bookings: 410,
-    //   inquiries: 8,
-    //   revenue: 12500
-    // });
   }, []);
 
   // Fetch services when services tab is selected
@@ -937,4 +898,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard
+export default AdminDashboard;
