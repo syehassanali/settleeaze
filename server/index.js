@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import passport from 'passport';
 import session from 'express-session';
+import Service from './models/Service.js'; // Import the Service model
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/user.js';
 import bookingRoutes from './routes/booking.js';
@@ -58,7 +59,7 @@ app.use(passport.session());
 // Routes
 app.get('/api/services', async (req, res) => {
   try {
-    const Service = mongoose.model('Service');
+    // No longer need mongoose.model('Service') here
     const services = await Service.find({
       isDeleted: false,
       visibility: 'Published'
