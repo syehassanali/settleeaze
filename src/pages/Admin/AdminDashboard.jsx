@@ -460,10 +460,10 @@ const AdminDashboard = () => {
               <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition" onClick={()=>{/* open package modal for add */}}><FaPlus />Add New Package</button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-              {packages.length === 0 ? (
+              {Array.isArray(packages) && packages.length === 0 ? (
                 <div className="col-span-full text-center text-gray-500 py-8">No packages found. Click "Add New Package" to create one.</div>
               ) : (
-                packages.map(pkg => (
+                Array.isArray(packages) && packages.map(pkg => (
                   <div key={pkg._id} className="bg-white rounded-xl shadow p-6 flex flex-col items-center text-center">
                     <img src={pkg.image || '/dummy/airport.jpg'} alt={pkg.name} className="w-full h-32 object-cover rounded mb-4" />
                     <h3 className="text-lg font-bold mb-1 text-indigo-700">{pkg.name}</h3>
