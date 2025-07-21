@@ -11,13 +11,21 @@ const ServicesPage = () => {
   useEffect(() => {
     setLoading(true);
     fetch(API_URL)
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          // If response is not OK, create a detailed error to be caught below
+          throw new Error(`Request failed with status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then(data => {
         setServices(data.services || []);
         setLoading(false);
       })
-      .catch(() => {
-        setError('Failed to load services');
+      .catch((e) => {
+        // Catch any error from the fetch or the .then() chain
+        console.error("Error fetching services:", e);
+        setError(`Failed to load services. ${e.message}`);
         setLoading(false);
       });
   }, []);
