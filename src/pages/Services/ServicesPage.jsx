@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import ServiceCard from '../../components/ServiceCard';
 
-const API_URL = '/api/public/services';
+const API_URL =
+  import.meta.env.VITE_API_BASE_URL
+    ? `${import.meta.env.VITE_API_BASE_URL}/api/public/services`
+    : '/api/public/services';
 
 const ServicesPage = () => {
   const [services, setServices] = useState([]);
