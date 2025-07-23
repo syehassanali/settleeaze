@@ -7,10 +7,11 @@ const ServiceCard = ({ service }) => {
       <div className="text-4xl mb-3">{service.icon || '🔧'}</div>
       <div className="w-full h-40 bg-gray-100 rounded-lg mb-3 overflow-hidden flex items-center justify-center">
         <img
-          src={service.image}
+          src={service.imageUrl || service.image || 'https://via.placeholder.com/200x160?text=No+Image'}
           alt={service.title}
           className="w-full h-full object-cover object-center"
-          style={{ minHeight: '100px', maxHeight: '160px' }}
+          style={{ minHeight: '100px', maxHeight: '160px', aspectRatio: '5/4' }}
+          onError={e => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/200x160?text=No+Image'; }}
         />
       </div>
       <h3 className="text-lg font-bold mb-1 text-indigo-700">{service.title}</h3>
