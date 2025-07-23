@@ -68,11 +68,11 @@ const AdminDashboard = () => {
     try {
       if (editingService) {
         // Edit
-        const res = await api.put(`/admin/services/${editingService._id}`, serviceForm);
+        const res = await api.put(`/api/admin/services/${editingService._id}`, serviceForm);
         setServices(services.map(s => s._id === editingService._id ? res.data : s));
       } else {
         // Add
-        const res = await api.post('/admin/services', serviceForm);
+        const res = await api.post('/api/admin/services', serviceForm);
         setServices([res.data, ...services]);
       }
       setServiceModalOpen(false);
@@ -87,7 +87,7 @@ const AdminDashboard = () => {
   const handleDeleteService = async id => {
     if (window.confirm('Are you sure you want to delete this service?')) {
       try {
-        await api.delete(`/admin/services/${id}`);
+        await api.delete(`/api/admin/services/${id}`);
         setServices(services.filter(service => service._id !== id));
       } catch (error) {
         alert('Error deleting service.');
@@ -103,7 +103,7 @@ const AdminDashboard = () => {
     try {
       const formData = new FormData();
       formData.append('image', file);
-      const res = await api.post('/admin/services/upload', formData, {
+      const res = await api.post('/api/admin/services/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       setServiceForm(f => ({ ...f, imageUrl: res.data.url }));
@@ -124,7 +124,7 @@ const AdminDashboard = () => {
   // Booking status update handler
   const handleBookingStatusChange = async (bookingId, newStatus) => {
     try {
-      await api.patch(`/admin/bookings/${bookingId}`, { status: newStatus });
+      await api.patch(`/api/admin/bookings/${bookingId}`, { status: newStatus });
       setBookings(prev => prev.map(b => b._id === bookingId ? { ...b, status: newStatus } : b));
     } catch (err) {
       alert('Failed to update booking status.');
@@ -137,10 +137,10 @@ const AdminDashboard = () => {
     setLoading(true);
     setError(null);
     Promise.all([
-      api.get('/admin/stats'),
-      api.get('/admin/users'),
-      api.get('/admin/bookings'),
-      api.get('/admin/inquiries'),
+      api.get('/api/admin/stats'),
+      api.get('/api/admin/users'),
+      api.get('/api/admin/bookings'),
+      api.get('/api/admin/inquiries'),
     ])
       .then(([statsRes, usersRes, bookingsRes, inquiriesRes]) => {
         setStats(statsRes.data);
@@ -159,7 +159,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     if (tab === 'services') {
       setLoading(true);
-      api.get('/admin/services')
+      api.get('/api/admin/services')
         .then(response => {
           setServices(Array.isArray(response.data.services) ? response.data.services : []);
         })
@@ -175,7 +175,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     if (tab === 'packages') {
       setLoading(true);
-      api.get('/admin/packages')
+      api.get('/api/admin/packages')
         .then(response => {
           setPackages(Array.isArray(response.data.packages) ? response.data.packages : []);
         })
@@ -514,7 +514,7 @@ const AdminDashboard = () => {
             <form className="grid grid-cols-1 md:grid-cols-2 gap-6" onSubmit={async e => {
               e.preventDefault();
               try {
-                await api.put(`/admin/cms/${cmsEdit._id}`, { ...cmsEdit });
+                await api.put(`/api/admin/cms/${cmsEdit._id}`, { ...cmsEdit });
                 setCms(cmsEdit);
                 alert('Bank info updated!');
               } catch (err) {
