@@ -33,7 +33,7 @@ const LoginPage = () => {
     }
     setLoading(true);
     try {
-      const res = await api.post('/auth/login', form);
+      const res = await api.post('/api/auth/login', form);
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('userName', res.data.user.name);
       setLoading(false);
@@ -50,7 +50,7 @@ const LoginPage = () => {
 
   const handleGoogleLogin = () => {
     // Redirect to backend Google OAuth endpoint
-    const googleAuthUrl = `${import.meta.env.VITE_API_BASE_URL}/auth/google`;
+    const googleAuthUrl = `${import.meta.env.VITE_API_BASE_URL}/api/auth/google`;
     window.location.href = googleAuthUrl;
   };
 

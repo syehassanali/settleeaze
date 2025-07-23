@@ -89,7 +89,7 @@ const DashboardPage = () => {
       return;
     }
     
-    api.get('/user/me')
+    api.get('/api/user/me')
       .then(res => {
         setUser(res.data);
         setLoading(false);
@@ -106,7 +106,7 @@ const DashboardPage = () => {
   const fetchBookings = () => {
     if (user && user._id) {
       setBookingsLoading(true);
-      api.get(`/booking/user/${user._id}`)
+      api.get(`/api/booking/user/${user._id}`)
         .then(res => {
           setBookings(res.data.bookings || []);
         })
@@ -134,7 +134,7 @@ const DashboardPage = () => {
     if (!selectedBooking) return;
     setActionLoading(true);
     try {
-      await api.patch(`/booking/${selectedBooking._id}/mark-paid`);
+      await api.patch(`/api/booking/${selectedBooking._id}/mark-paid`);
       handleCloseBankModal();
       fetchBookings();
     } catch (err) {
@@ -158,7 +158,7 @@ const DashboardPage = () => {
     setEditLoading(true);
     setEditError('');
     try {
-      const res = await api.patch('/user/me', editForm);
+      const res = await api.patch('/api/user/me', editForm);
       setUser(res.data.user);
       toast.success('Profile updated!');
       setEditModalOpen(false);
@@ -178,7 +178,7 @@ const DashboardPage = () => {
     if (!cancelBooking) return;
     setCancelLoading(true);
     try {
-      await api.patch(`/booking/${cancelBooking._id}`, { status: 'Cancelled' });
+      await api.patch(`/api/booking/${cancelBooking._id}`, { status: 'Cancelled' });
       toast.success('Booking cancelled!');
       setCancelBooking(null);
       fetchBookings();

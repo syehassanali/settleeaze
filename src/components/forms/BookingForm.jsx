@@ -39,7 +39,7 @@ const BookingForm = ({ open, onClose, pkg }) => {
     }
 
     try {
-      const res = await api.post('/booking', {
+      const res = await api.post('/api/booking', {
         userName: form.userName,
         email: form.email,
         phone: form.phone,

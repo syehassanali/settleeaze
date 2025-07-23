@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await api.post('/auth/login', { email, password });
+      const response = await api.post('/api/auth/login', { email, password });
       console.log('Login response:', response.data);
 
       // Use compatible decode function
@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     try {
-      const response = await api.post('/auth/register', userData)
+      const response = await api.post('/api/auth/register', userData)
       console.log('Register response:', response.data);
       setUser(response.data.user)
       // DEV PATCH: force admin role for local testing after register

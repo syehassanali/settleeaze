@@ -30,7 +30,7 @@ const RegisterPage = () => {
     setError('');
     setLoading(true);
     try {
-      const res = await api.post('/auth/register', {
+      const res = await api.post('/api/auth/register', {
         name: form.name,
         email: form.email,
         password: form.password,
@@ -48,7 +48,7 @@ const RegisterPage = () => {
 
   const handleGoogleSignup = () => {
     // Redirect to backend Google OAuth endpoint
-    const googleAuthUrl = `${import.meta.env.VITE_API_BASE_URL}/auth/google`;
+    const googleAuthUrl = `${import.meta.env.VITE_API_BASE_URL}/api/auth/google`;
     window.location.href = googleAuthUrl;
   };
 
